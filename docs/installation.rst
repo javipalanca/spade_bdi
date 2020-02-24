@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/sfp932705/spade_bdi
+    $ git clone git://github.com/javipalanca/spade_bdi
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/sfp932705/spade_bdi/tarball/master
+    $ curl  -OL https://github.com/javipalanca/spade_bdi/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/sfp932705/spade_bdi
-.. _tarball: https://github.com/sfp932705/spade_bdi/tarball/master
+.. _Github repo: https://github.com/javipalanca/spade_bdi
+.. _tarball: https://github.com/javipalanca/spade_bdi/tarball/master
