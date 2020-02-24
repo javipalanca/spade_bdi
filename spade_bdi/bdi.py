@@ -71,15 +71,18 @@ class BDIAgent(Agent):
         def add_actions(self):
             @self.agent.bdi_actions.add(".send", 3)
             def _send(agent, term, intention):
-                receiver = str(asp.grounded(term.args[0], intention.scope))
+                receivers = asp.grounded(term.args[0], intention.scope)
+                if isinstance(receivers, str) or isinstance(receivers, asp.Literal):
+                    receivers = (receivers,)
                 ilf = asp.grounded(term.args[1], intention.scope)
                 if not asp.is_atom(ilf):
                     return
                 ilf_type = ilf.functor
                 mdata = {"performative": "BDI", "ilf_type": ilf_type, }
-                body = asp.asl_str(asp.freeze(term.args[2], intention.scope, {}))
-                msg = Message(to=receiver, body=body, metadata=mdata)
-                self.agent.submit(self.send(msg))
+                for receiver in receivers:
+                    body = asp.asl_str(asp.freeze(term.args[2], intention.scope, {}))
+                    msg = Message(to=str(receiver), body=body, metadata=mdata)
+                    self.agent.submit(self.send(msg))
                 yield
 
         def set_belief(self, name: str, *args):
@@ -207,15 +210,14 @@ def parse_literal(msg):
         args = msg.split("(")[1]
         args = args.split(")")[0]
         args = literal_eval(args)
-        if not isinstance(args, tuple):
-            args = (args,)
-        new_args = []
-        for arg in args:
+
+        def recursion(arg):
             if isinstance(arg, list):
-                arg = tuple(arg)
-            new_args.append(arg)
-        args = tuple(new_args)
+                return tuple(recursion(i) for i in arg)
+            return arg
+
+        new_args = (recursion(args),)
 
     else:
-        args = ''
-    return functor, args
+        new_args = ''
+    return functor, new_args

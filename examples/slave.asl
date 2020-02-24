@@ -1,23 +1,23 @@
-contador(0).
+counter(0).
 
-+incrementar(Inc)[source(S)]: master(M) & .substring(M,S,R)
++increase(Inc)[source(S)]: master(M) & .substring(M,S,R)
  <- 
   .print("increasing");
-  ?contador(X);
+  ?counter(X);
   .print(X);
-  -+contador(X+Inc).
+  -+counter(X+Inc).
 
-+decrementar(Dec)[source(S)]: master(M) & .substring(M,S,R)
++decrease(Dec)[source(S)]: master(M) & .substring(M,S,R)
  <- 
   .print("decreasing");
-  ?contador(X);
+  ?counter(X);
   .print(X);
-  -+contador(X-Dec).
+  -+counter(X-Dec).
 
--incrementar(Inc)[source(S)]: master(M) & .substring(M,S,R)
+-increase(Inc)[source(S)]: master(M) & .substring(M,S,R)
  <-
-  .print("DELETING incrementar BELIEF from an untell message").
+  .print("DELETING increase BELIEF from an untell message").
 
--decrementar(Dec)[source(S)]: master(M) & .substring(M,S,R)
+-decrease(Dec)[source(S)]: master(M) & .substring(M,S,R)
  <-
-  .print("DELETING decrementar BELIEF from an untell message").
+  .print("DELETING decrease BELIEF from an untell message").

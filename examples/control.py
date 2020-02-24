@@ -21,18 +21,18 @@ class MasterAgent(BDIAgent):
         async def run(self):
             if self.agent.bdi_enabled:
                 try:
-                    tipo = self.agent.bdi.get_belief_value("tipo")[0]
-                    if tipo == 'inc':
-                        self.agent.bdi.set_belief('tipo', 'dec')
+                    count_type = self.agent.bdi.get_belief_value("type")[0]
+                    if count_type == 'inc':
+                        self.agent.bdi.set_belief('type', 'dec')
                     else:
-                        self.agent.bdi.set_belief('tipo', 'inc')
+                        self.agent.bdi.set_belief('type', 'inc')
                 except Exception as e:
                     self.kill()
 
     class Behav4(TimeoutBehaviour):
         async def run(self):
-            self.agent.bdi.remove_belief('tipo', 'inc')
-            self.agent.bdi.remove_belief('tipo', 'dec')
+            self.agent.bdi.remove_belief('type', 'inc')
+            self.agent.bdi.remove_belief('type', 'dec')
 
 
 def main(server, password):
@@ -49,7 +49,7 @@ def main(server, password):
     a = MasterAgent("master@{}".format(server), password, "master.asl")
     a.bdi.set_belief("slave1", "slave_1@{}".format(server))
     a.bdi.set_belief("slave2", "slave_2@{}".format(server))
-    a.bdi.set_belief('tipo', 'dec')
+    a.bdi.set_belief('type', 'dec')
     future = a.start()
     future.result()
 
