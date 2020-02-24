@@ -7,20 +7,15 @@ Spade-BDI
         :target: https://pypi.python.org/pypi/spade_bdi
 
 .. image:: https://img.shields.io/travis/sfp932705/spade_bdi.svg
-        :target: https://travis-ci.org/sfp932705/spade_bdi
+        :target: https://travis-ci.org/javipalanca/spade_bdi
 
 .. image:: https://readthedocs.org/projects/spade-bdi/badge/?version=latest
         :target: https://spade-bdi.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/sfp932705/spade_bdi/shield.svg
-     :target: https://pyup.io/repos/github/sfp932705/spade_bdi/
-     :alt: Updates
 
-
-
-Implement BDI Agents based on the SPADE MAS Platform
+Create hybrid agents with a BDI layer for the SPADE MAS Platform.
 
 
 * Free software: GNU General Public License v3
@@ -30,7 +25,9 @@ Implement BDI Agents based on the SPADE MAS Platform
 Features
 --------
 
-* TODO
+* Supports Agentspeak-like BDI behaviours.
+* Add custom actions and functions.
+* Send TELL, UNTELL and ACHIEVE  KQML performatives.
 
 Credits
 -------

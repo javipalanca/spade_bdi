@@ -16,7 +16,7 @@ PERCEPT_TAG = frozenset([asp.Literal("source", (asp.Literal("percept"),))])
 
 
 class BDIAgent(Agent):
-    def __init__(self, jid: str, password: str, asl: str, *args, **kwargs):
+    def __init__(self, jid: str, password: str, asl: str, actions=None, *args, **kwargs):
         self.asl_file = asl
         self.bdi_enabled = False
         self.bdi_intention_buffer = deque()
@@ -31,9 +31,14 @@ class BDIAgent(Agent):
         self.add_behaviour(self.BDIBehaviour(), template)
 
         self.bdi_env = asp.runtime.Environment()
-        self.bdi_actions = asp.Actions(asp.stdlib.actions)
+        self.bdi_actions = asp.Actions(asp.stdlib.actions) if not actions else actions
+
         self.bdi.add_actions()
+        self.add_custom_actions(self.bdi_actions)
         self._load_asl()
+
+    def add_custom_actions(self, actions):
+        pass
 
     def pause_bdi(self):
         self.bdi_enabled = False
@@ -76,19 +81,6 @@ class BDIAgent(Agent):
                 msg = Message(to=receiver, body=body, metadata=mdata)
                 self.agent.submit(self.send(msg))
                 yield
-
-            @self.agent.bdi_actions.add(".custom_action", 1)
-            def _custom_action(agent, term, intention):
-                asp.grounded(term.args[0], intention.scope)
-                yield
-
-            @self.agent.bdi_actions.add_function(".a_function", (int,))
-            def _a_function(x):
-                return x ** 4
-
-            @self.agent.bdi_actions.add_function("literal_function", (asp.Literal,))
-            def _literal_function(x):
-                return x
 
         def set_belief(self, name: str, *args):
             """Set an agent's belief. If it already exists, updates it."""
