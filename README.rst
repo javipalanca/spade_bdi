@@ -7,7 +7,7 @@ Spade-BDI
         :target: https://pypi.python.org/pypi/spade_bdi
 
 .. image:: https://img.shields.io/travis/sfp932705/spade_bdi.svg
-        :target: https://travis-ci.org/sfp932705/spade_bdi
+        :target: https://travis-ci.org/javipalanca/spade_bdi
 
 .. image:: https://readthedocs.org/projects/spade-bdi/badge/?version=latest
         :target: https://spade-bdi.readthedocs.io/en/latest/?badge=latest
