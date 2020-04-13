@@ -27,7 +27,7 @@ History
 ------------------
 
 * Moved from pyson to python-agentspeak
-* Added some helpers like pause_bdi, resume_bdi.
+* Added some helpers like pause_bdi, resume_bdi. 
 * Now the asl file in the constructor is mandatory.
 * Allow to send tell messages with no args.
 * Allow sending messages with variables.
