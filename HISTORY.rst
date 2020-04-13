@@ -2,6 +2,12 @@
 History
 =======
 
+0.2.1 (2020-04-13)
+------------------
+
+* Fixed a bug when updating beliefs.
+* Upgraded spade version to 3.1.4.
+
 0.2.0 (2020-02-24)
 ------------------
 
