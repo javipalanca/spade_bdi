@@ -6,7 +6,7 @@ from loguru import logger
 from collections import deque
 import agentspeak as asp
 import agentspeak.runtime
-import agentspeak.stdlib
+from agentspeak.stdlib import actions as asp_action
 from spade.behaviour import CyclicBehaviour
 from spade.agent import Agent
 from spade.template import Template
@@ -32,7 +32,6 @@ class BDIAgent(Agent):
 
         self.bdi_env = asp.runtime.Environment()
         self.bdi_actions = asp.Actions(asp.stdlib.actions) if not actions else actions
-
         self.bdi.add_actions()
         self.add_custom_actions(self.bdi_actions)
         self._load_asl()
@@ -196,10 +195,10 @@ class BDIAgent(Agent):
                     temp_intentions = deque(self.agent.bdi_intention_buffer)
                     for trigger, goal_type, term, intention in temp_intentions:
                         self.agent.bdi_agent.call(trigger, goal_type, term, intention)
-                        self.agent.bdi_agent.step()
                         self.agent.bdi_intention_buffer.popleft()
-                else:
-                    self.agent.bdi_agent.step()
+               
+                self.agent.bdi_agent.step()
+                            
             else:
                 await asyncio.sleep(0.1)
 

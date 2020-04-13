@@ -19,12 +19,13 @@ Create hybrid agents with a BDI layer for the SPADE MAS Platform.
 
 
 * Free software: GNU General Public License v3
-* Documentation: https://spade-bdi.readthedocs.io.
+* Documentation: https://spade-bdi.readthedocs.io. (to be done)
 
 
 Features
 --------
 
+* Create agents that parse and execute an ASL file written in AgentSpeak.
 * Supports Agentspeak-like BDI behaviours.
 * Add custom actions and functions.
 * Send TELL, UNTELL and ACHIEVE  KQML performatives.
@@ -73,6 +74,52 @@ basic.asl::
         +truck(blue).
 
     +car(Color)
+     <- .print("The car is ",Color).
+
+
+Examples
+--------
+
+basic.py::
+
+    import argparse
+    from spade_bdi.bdi import BDIAgent
+
+    parser = argparse.ArgumentParser(description='spade bdi master-server example')
+    parser.add_argument('--server', type=str, default="localhost", help='XMPP server address.')
+    parser.add_argument('--password', type=str, default="bdipassword", help='XMPP password for the agents.')
+    args = parser.parse_args()
+
+    a = BDIAgent("BasicAgent@" + args.server, args.password, "basic.asl")
+    a.start()
+
+    a.bdi.set_belief("car", "blue", "big")
+    a.bdi.print_beliefs()
+
+    print(a.bdi.get_belief("car"))
+    a.bdi.print_beliefs()
+    
+    a.bdi.remove_belief("car", 'blue', "big")
+    a.bdi.print_beliefs()
+    
+    print(a.bdi.get_beliefs())
+    a.bdi.set_belief("car", 'yellow')
+
+
+basic.asl::
+
+    !start.
+
+    +!start <-
+        +car(red);
+        .a_function(3,W);
+        .print("w =", W);
+        literal_function(red,Y);
+        .print("Y =", Y);
+        .custom_action(8);
+        +truck(blue).
+
+    +car(Color) 
      <- .print("The car is ",Color).
 
 
