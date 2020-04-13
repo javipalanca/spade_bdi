@@ -195,7 +195,6 @@ class BDIAgent(Agent):
                     temp_intentions = deque(self.agent.bdi_intention_buffer)
                     for trigger, goal_type, term, intention in temp_intentions:
                         self.agent.bdi_agent.call(trigger, goal_type, term, intention)
-                        '''self.agent.bdi_agent.step()'''
                         self.agent.bdi_intention_buffer.popleft()
                
                 self.agent.bdi_agent.step()
