@@ -2,17 +2,21 @@
 import asyncio
 import time
 from ast import literal_eval
-from loguru import logger
 from collections import deque
+
 import agentspeak as asp
-import agentspeak.runtime
-from agentspeak.stdlib import actions as asp_action
-from spade.behaviour import CyclicBehaviour
+from agentspeak import runtime as asp_runtime, stdlib as asp_stdlib
+from loguru import logger
 from spade.agent import Agent
-from spade.template import Template
+from spade.behaviour import CyclicBehaviour
 from spade.message import Message
+from spade.template import Template
 
 PERCEPT_TAG = frozenset([asp.Literal("source", (asp.Literal("percept"),))])
+
+
+class BeliefNotInitiated(Exception):
+    pass
 
 
 class BDIAgent(Agent):
@@ -30,8 +34,8 @@ class BDIAgent(Agent):
         template = Template(metadata={"performative": "BDI"})
         self.add_behaviour(self.BDIBehaviour(), template)
 
-        self.bdi_env = asp.runtime.Environment()
-        self.bdi_actions = asp.Actions(asp.stdlib.actions) if not actions else actions
+        self.bdi_env = asp_runtime.Environment()
+        self.bdi_actions = asp.Actions(asp_stdlib.actions) if not actions else actions
         self.bdi.add_actions()
         self.add_custom_actions(self.bdi_actions)
         self._load_asl()
@@ -122,6 +126,8 @@ class BDIAgent(Agent):
             key = str(key)
             for beliefs in self.agent.bdi_agent.beliefs:
                 if beliefs[0] == key:
+                    if len(self.agent.bdi_agent.beliefs[beliefs]) == 0:
+                        raise BeliefNotInitiated(key)
                     raw_belief = (str(list(self.agent.bdi_agent.beliefs[beliefs])[0]))
                     raw_belief = self._remove_source(raw_belief, source)
                     belief = raw_belief
