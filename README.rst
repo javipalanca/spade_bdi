@@ -29,22 +29,19 @@ Features
 * Supports Agentspeak-like BDI behaviours.
 * Add custom actions and functions.
 * Send TELL, UNTELL and ACHIEVE  KQML performatives.
-* Create agents that parse and execute an ASL file written in AgentSpeak.
 
 Examples
 --------
 
 basic.py::
 
-    import argparse
+    import getpass
     from spade_bdi.bdi import BDIAgent
 
-    parser = argparse.ArgumentParser(description='spade bdi master-server example')
-    parser.add_argument('--server', type=str, default="localhost", help='XMPP server address.')
-    parser.add_argument('--password', type=str, default="bdipassword", help='XMPP password for the agents.')
-    args = parser.parse_args()
+    server = input("Please enter the XMPP server address: ")
+    password = getpass.getpass("Please enter the password: ")
 
-    a = BDIAgent("BasicAgent@" + args.server, args.password, "basic.asl")
+    a = BDIAgent("BasicAgent@" + server, password, "basic.asl")
     a.start()
 
     a.bdi.set_belief("car", "blue", "big")
@@ -82,15 +79,13 @@ Examples
 
 basic.py::
 
-    import argparse
+    import getpass
     from spade_bdi.bdi import BDIAgent
 
-    parser = argparse.ArgumentParser(description='spade bdi master-server example')
-    parser.add_argument('--server', type=str, default="localhost", help='XMPP server address.')
-    parser.add_argument('--password', type=str, default="bdipassword", help='XMPP password for the agents.')
-    args = parser.parse_args()
+    server = input("Please enter the XMPP server address: ")
+    password = getpass.getpass("Please enter the password: ")
 
-    a = BDIAgent("BasicAgent@" + args.server, args.password, "basic.asl")
+    a = BDIAgent("BasicAgent@" + server, password, "basic.asl")
     a.start()
 
     a.bdi.set_belief("car", "blue", "big")
