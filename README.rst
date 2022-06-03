@@ -2,24 +2,33 @@
 Spade-BDI
 =========
 
-
 .. image:: https://img.shields.io/pypi/v/spade_bdi.svg
-        :target: https://pypi.python.org/pypi/spade_bdi
+        :target: https://pypi.python.org/pypi/spade
 
-.. image:: https://img.shields.io/travis/sfp932705/spade_bdi.svg
-        :target: https://travis-ci.org/javipalanca/spade_bdi
+.. image:: https://img.shields.io/pypi/pyversions/spade_bdi.svg
+    :target: https://pypi.python.org/pypi/spade_bdi
 
-.. image:: https://readthedocs.org/projects/spade-bdi/badge/?version=latest
-        :target: https://spade-bdi.readthedocs.io/en/latest/?badge=latest
+.. image:: https://img.shields.io/apm/l/atomic-design-ui.svg?
+    :target: https://opensource.org/licenses/MIT
+    :alt: MIT License
+
+.. image:: https://pepy.tech/badge/spade_bdi
+    :target: https://pepy.tech/project/spade_bdi
+    :alt: Downloads
+
+.. image:: https://readthedocs.org/projects/spade_bdi/badge/?version=latest
+        :target: https://spade-bdi.readthedocs.io?badge=latest
         :alt: Documentation Status
 
+.. image:: https://img.shields.io/pypi/format/spade_bdi.svg
+    :target: https://pypi.python.org/pypi/spade_bdi
 
 
 Create hybrid agents with a BDI layer for the SPADE MAS Platform.
 
 
 * Free software: GNU General Public License v3
-* Documentation: https://spade-bdi.readthedocs.io. (to be done)
+* Documentation: https://spade-bdi.readthedocs.io. (to be completed)
 
 
 Features
