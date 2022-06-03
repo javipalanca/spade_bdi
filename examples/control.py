@@ -1,12 +1,11 @@
-import argparse
+import getpass
 import time
+from datetime import datetime, timedelta
+
+from spade.behaviour import PeriodicBehaviour, TimeoutBehaviour
+from spade.template import Template
 
 from spade_bdi.bdi import BDIAgent
-from spade.template import Template
-from spade.behaviour import PeriodicBehaviour
-from spade.behaviour import TimeoutBehaviour
-from datetime import datetime
-from datetime import timedelta
 
 
 class MasterAgent(BDIAgent):
@@ -62,13 +61,10 @@ def main(server, password):
     c.pause_bdi()
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='spade bdi master-server example')
-    parser.add_argument('--server', type=str, default="localhost", help='XMPP server address.')
-    parser.add_argument('--password', type=str, default="bdipassword", help='XMPP password for the agents.')
-    args = parser.parse_args()
+server = input("XMPP Server> ")
+passwd = getpass.getpass()
 
-    try:
-        main(args.server, args.password)
-    except KeyboardInterrupt:
-        print("Exiting...")
+try:
+    main(server, passwd)
+except KeyboardInterrupt:
+    print("Exiting...")

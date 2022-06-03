@@ -1,19 +1,16 @@
-import argparse
+import time
+import getpass
 
 from spade import quit_spade
 
 from spade_bdi.bdi import BDIAgent
 
-parser = argparse.ArgumentParser(description='spade bdi basic example')
-parser.add_argument('--server', type=str, default="localhost", help='XMPP server address.')
-parser.add_argument('--name', type=str, default="basicagent", help='XMPP name for the agent.')
-parser.add_argument('--password', type=str, default="bdipassword", help='XMPP password for the agent.')
-args = parser.parse_args()
+jid = input("JID> ")
+passwd = getpass.getpass()
 
-a = BDIAgent("{}@{}".format(args.name, args.server), args.password, "basic.asl")
+a = BDIAgent(jid, passwd, "basic.asl")
 a.start()
 
-import time
 time.sleep(1)
 
 a.bdi.set_belief("car", "azul", "big")

@@ -2,6 +2,13 @@
 History
 =======
 
+0.2.2 (2022-06-03)
+------------------
+
+* Added exception when belief is not initialized.
+* Improved examples.
+* Improved documentation.
+
 0.2.1 (2020-04-13)
 ------------------
 
