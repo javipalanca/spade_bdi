@@ -204,7 +204,7 @@ class BDIAgent(Agent):
                         raise asp.AslError("unknown illocutionary force: {}".format(ilf_type))
 
                     intention = asp.runtime.Intention()
-                    if ilf_type == "tellHow":
+                    if ilf_type == "tellHow" or ilf_type == "unTellHow":
                         message = asp.Literal("", ["", "", msg.body])
                     else:
                         functor, args = parse_literal(msg.body)
