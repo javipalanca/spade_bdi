@@ -205,7 +205,6 @@ class BDIAgent(Agent):
 
                     intention = asp.runtime.Intention()
                     if ilf_type == "tellHow":
-                        print("Spade message ==========>", msg.body)
                         message = asp.Literal("", ["", "", msg.body])
                     else:
                         functor, args = parse_literal(msg.body)
