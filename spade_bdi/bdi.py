@@ -204,14 +204,18 @@ class BDIAgent(Agent):
                         raise asp.AslError("unknown illocutionary force: {}".format(ilf_type))
 
                     intention = asp.runtime.Intention()
+                    if ilf_type == "tellHow":
+                        print("Spade message ==========>", msg.body)
+                        message = asp.Literal("", ["", "", msg.body])
+                    else:
+                        functor, args = parse_literal(msg.body)
 
-                    functor, args = parse_literal(msg.body)
-
-                    message = asp.Literal(functor, args)
+                        message = asp.Literal(functor, args)
 
                     message = asp.freeze(message, intention.scope, {})
-
+                    
                     tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))
+
                     self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
 
                 if self.agent.bdi_intention_buffer:
