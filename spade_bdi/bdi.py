@@ -12,6 +12,9 @@ from spade.behaviour import CyclicBehaviour
 from spade.message import Message
 from spade.template import Template
 
+import re
+
+
 PERCEPT_TAG = frozenset([asp.Literal("source", (asp.Literal("percept"),))])
 
 
@@ -185,13 +188,27 @@ class BDIAgent(Agent):
                     elif ilf_type == "achieve":
                         goal_type = asp.GoalType.achievement
                         trigger = asp.Trigger.addition
+                    elif ilf_type == "unachieve":
+                        goal_type = asp.GoalType.achievement
+                        trigger = asp.Trigger.removal
+                    elif ilf_type == "tellHow":
+                        goal_type = asp.GoalType.tellHow
+                        trigger = asp.Trigger.addition
+                    elif ilf_type == "unTellHow":
+                        goal_type = asp.GoalType.tellHow
+                        trigger = asp.Trigger.removal
+                    elif ilf_type == "askHow":
+                        goal_type = asp.GoalType.askHow
+                        trigger = asp.Trigger.addition
                     else:
                         raise asp.AslError("unknown illocutionary force: {}".format(ilf_type))
 
                     intention = asp.runtime.Intention()
+
                     functor, args = parse_literal(msg.body)
 
                     message = asp.Literal(functor, args)
+
                     message = asp.freeze(message, intention.scope, {})
 
                     tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))
@@ -210,16 +227,25 @@ class BDIAgent(Agent):
 
 
 def parse_literal(msg):
+    
     functor = msg.split("(")[0]
+
     if "(" in msg:
         args = msg.split("(")[1]
         args = args.split(")")[0]
-        args = literal_eval(args)
+
+
+        x = re.search("^_X_*", args)
+
+        if(x is not None):
+            args = asp.Var()
+        else:
+            args = literal_eval(args)
 
         def recursion(arg):
             if isinstance(arg, list):
                 return tuple(recursion(i) for i in arg)
-            return arg
+            return arg        
 
         new_args = (recursion(args),)
 
