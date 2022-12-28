@@ -194,7 +194,7 @@ class BDIAgent(Agent):
                     elif ilf_type == "tellHow":
                         goal_type = asp.GoalType.tellHow
                         trigger = asp.Trigger.addition
-                    elif ilf_type == "unTellHow":
+                    elif ilf_type == "untellHow":
                         goal_type = asp.GoalType.tellHow
                         trigger = asp.Trigger.removal
                     elif ilf_type == "askHow":
@@ -204,9 +204,18 @@ class BDIAgent(Agent):
                         raise asp.AslError("unknown illocutionary force: {}".format(ilf_type))
 
                     intention = asp.runtime.Intention()
-                    if ilf_type == "tellHow" or ilf_type == "unTellHow":
+
+                    if ilf_type == "tellHow" or ilf_type == "untellHow":
+                        # Sends a String
                         message = asp.Literal("", ["", "", msg.body])
+                    elif ilf_type == "askHow":
+                        # Sends a String
+                        message = asp.Literal("", ["", "", msg.body])
+
+                        # Overrides function ask_how from module agentspeak
+                        asp_runtime.Agent._ask_how = _ask_how
                     else:
+                        # Sends a literal
                         functor, args = parse_literal(msg.body)
 
                         message = asp.Literal(functor, args)
@@ -214,6 +223,10 @@ class BDIAgent(Agent):
                     message = asp.freeze(message, intention.scope, {})
                     
                     tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))
+
+                    if ilf_type == "askHow":
+                        tagged_message = tagged_message.with_annotation(f"@askHow_sender[name({msg.sender})]")
+                    
 
                     self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
 
@@ -255,3 +268,8 @@ def parse_literal(msg):
     else:
         new_args = ''
     return functor, new_args
+
+
+def _ask_how(self, term):
+    print("Sobrrescrita =================>")
+
