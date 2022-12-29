@@ -170,6 +170,7 @@ class BDIAgent(Agent):
                 for belief in beliefs:
                     print(self._remove_source(str(belief), source))
 
+
         async def run(self):
             """
             Coroutine run cyclic.
@@ -212,8 +213,17 @@ class BDIAgent(Agent):
                         # Sends a String
                         message = asp.Literal("", ["", "", msg.body])
 
-                        # Overrides function ask_how from module agentspeak
                         asp_runtime.Agent._ask_how = _ask_how
+
+                        def _call_ask_how(self, receiver, term, intention):
+                            _call_ask_how.spade_agent.call(asp.Trigger.addition, asp.GoalType.tellHow, term, intention)
+                        
+                        _call_ask_how.spade_agent = self.agent.bdi_agent
+
+                        asp_runtime.Agent._call_ask_how = _call_ask_how
+
+                        # Overrides function ask_how from module agentspeak
+                        #asp_runtime.Agent._ask_how = _ask_how
                     else:
                         # Sends a literal
                         functor, args = parse_literal(msg.body)
@@ -269,7 +279,24 @@ def parse_literal(msg):
         new_args = ''
     return functor, new_args
 
+ 
 
 def _ask_how(self, term):
-    print("Sobrrescrita =================>")
-
+    """
+        AskHow is a performative that allows the agent to ask for a plan to another agent.
+        We look in the plan.list of the slave agent the plan that master want,
+        if we find it: master agent use tellHow to tell the plan to slave agent
+    """
+    # Receive the agent that ask for the plan
+    for annotation in list(term.annots):
+        if isinstance(annotation, str):
+            if "askHow_sender" in annotation:
+                sender_name = annotation.split("(")[1].split(")")[0]
+    print("askhow self_name", self.name) 
+    print("askhow sender_name", sender_name) 
+    # Find the plans       
+    plans_wanted = self.find_plans(term)
+ 
+    for strplan in plans_wanted:
+        term.args = (sender_name, "tellHow", strplan)
+        self._call_ask_how("", term, asp.runtime.Intention())
