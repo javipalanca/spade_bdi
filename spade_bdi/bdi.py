@@ -216,9 +216,15 @@ class BDIAgent(Agent):
                         asp_runtime.Agent._ask_how = _ask_how
 
                         def _call_ask_how(self, receiver, term, intention):
-                            _call_ask_how.spade_agent.call(asp.Trigger.addition, asp.GoalType.tellHow, term, intention)
+                                body = asp.asl_str(asp.freeze(term.args[2], intention.scope, {}))
+                                mdata = {"performative": "BDI", "ilf_type": term.args[1], }
+                                msg = Message(to=receiver, body=body, metadata=mdata)
+                                _call_ask_how.spade_agent.submit(_call_ask_how.spade_class.send(msg))
+
                         
-                        _call_ask_how.spade_agent = self.agent.bdi_agent
+                        _call_ask_how.spade_agent = self.agent
+
+                        _call_ask_how.spade_class = self
 
                         asp_runtime.Agent._call_ask_how = _call_ask_how
 
@@ -292,11 +298,9 @@ def _ask_how(self, term):
         if isinstance(annotation, str):
             if "askHow_sender" in annotation:
                 sender_name = annotation.split("(")[1].split(")")[0]
-    print("askhow self_name", self.name) 
-    print("askhow sender_name", sender_name) 
     # Find the plans       
     plans_wanted = self.find_plans(term)
  
     for strplan in plans_wanted:
         term.args = (sender_name, "tellHow", strplan)
-        self._call_ask_how("", term, asp.runtime.Intention())
+        self._call_ask_how(sender_name, term, asp.runtime.Intention())
