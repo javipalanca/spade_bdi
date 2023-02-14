@@ -2,7 +2,7 @@
 import asyncio
 import time
 from ast import literal_eval
-from collections import deque
+from collections import deque, defaultdict
 
 import agentspeak as asp
 from agentspeak import runtime as asp_runtime, stdlib as asp_stdlib
@@ -298,9 +298,17 @@ def _ask_how(self, term):
         if isinstance(annotation, str):
             if "askHow_sender" in annotation:
                 sender_name = annotation.split("(")[1].split(")")[0]
-    # Find the plans       
-    plans_wanted = self.find_plans(term)
- 
-    for strplan in plans_wanted:
-        term.args = (sender_name, "tellHow", strplan)
-        self._call_ask_how(sender_name, term, asp.runtime.Intention())
+    # Find the plans
+    plans_wanted = defaultdict(lambda: [])
+    plans = self.plans.values()
+    for plan in plans:
+        for differents in plan:
+            if differents.head.functor in term.args[2]:
+                plans_wanted[(differents.trigger, differents.goal_type, differents.head.functor, len(differents.head.args))].append(differents)
+
+    for plan in plans_wanted.values():
+        for differents in plan:
+            strplan = asp.runtime.plan_to_str(differents)
+            term.args = (sender_name, "tellHow", strplan)
+            self._call_ask_how(sender_name, term, asp.runtime.Intention())
+
