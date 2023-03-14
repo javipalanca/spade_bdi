@@ -238,11 +238,7 @@ class BDIAgent(Agent):
 
                     message = asp.freeze(message, intention.scope, {})
                     
-                    tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))
-
-                    if ilf_type == "askHow":
-                        tagged_message = tagged_message.with_annotation(f"@askHow_sender[name({msg.sender})]")
-                    
+                    tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))                    
 
                     self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
 
