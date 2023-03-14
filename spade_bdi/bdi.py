@@ -206,15 +206,17 @@ class BDIAgent(Agent):
 
                     intention = asp.runtime.Intention()
 
-                    if ilf_type == "tellHow" or ilf_type == "untellHow":
-                        # Sends a String
-                        message = asp.Literal("", ["", "", msg.body])
-                    elif ilf_type == "askHow":
-                        # Sends a String
-                        message = asp.Literal("", ["", "", msg.body])
 
-                        asp_runtime.Agent._ask_how = _ask_how
-
+                    # Prepare message. The message is either a plain text or a structured message.
+                    if ilf_type in ["tellHow", "askHow", "untellHow"]:
+                        message = asp.Literal("plain_text", (msg.body, ), frozenset())
+                    else:
+                        functor, args = parse_literal(msg.body)
+                        message = asp.Literal(functor, args)
+                        message = asp.freeze(message, intention.scope, {})
+                    
+                    # Override the _call_ask_how method to send the message to the agent
+                    if ilf_type == "askHow":
                         def _call_ask_how(self, receiver, term, intention):
                                 body = asp.asl_str(asp.freeze(term.args[2], intention.scope, {}))
                                 mdata = {"performative": "BDI", "ilf_type": term.args[1], }
@@ -228,6 +230,7 @@ class BDIAgent(Agent):
 
                         asp_runtime.Agent._call_ask_how = _call_ask_how
 
+<<<<<<< Updated upstream
                         # Overrides function ask_how from module agentspeak
                         #asp_runtime.Agent._ask_how = _ask_how
                     else:
@@ -238,6 +241,9 @@ class BDIAgent(Agent):
 
                     message = asp.freeze(message, intention.scope, {})
                     
+=======
+                    # Add source to message
+>>>>>>> Stashed changes
                     tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))                    
 
                     self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
@@ -280,31 +286,4 @@ def parse_literal(msg):
     else:
         new_args = ''
     return functor, new_args
-
- 
-
-def _ask_how(self, term):
-    """
-        AskHow is a performative that allows the agent to ask for a plan to another agent.
-        We look in the plan.list of the slave agent the plan that master want,
-        if we find it: master agent use tellHow to tell the plan to slave agent
-    """
-    # Receive the agent that ask for the plan
-    for annotation in list(term.annots):
-        if isinstance(annotation, str):
-            if "askHow_sender" in annotation:
-                sender_name = annotation.split("(")[1].split(")")[0]
-    # Find the plans
-    plans_wanted = defaultdict(lambda: [])
-    plans = self.plans.values()
-    for plan in plans:
-        for differents in plan:
-            if differents.head.functor in term.args[2]:
-                plans_wanted[(differents.trigger, differents.goal_type, differents.head.functor, len(differents.head.args))].append(differents)
-
-    for plan in plans_wanted.values():
-        for differents in plan:
-            strplan = asp.runtime.plan_to_str(differents)
-            term.args = (sender_name, "tellHow", strplan)
-            self._call_ask_how(sender_name, term, asp.runtime.Intention())
 
