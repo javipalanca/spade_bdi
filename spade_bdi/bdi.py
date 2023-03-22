@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import asyncio
+import collections
 import time
 from ast import literal_eval
 from collections import deque, defaultdict
@@ -210,18 +211,13 @@ class BDIAgent(Agent):
                     # Prepare message. The message is either a plain text or a structured message.
                     if ilf_type in ["tellHow", "askHow", "untellHow"]:
                         message = asp.Literal("plain_text", (msg.body, ), frozenset())
-                    else:
-                        functor, args = parse_literal(msg.body)
-                        message = asp.Literal(functor, args)
-                        message = asp.freeze(message, intention.scope, {})
-                    
-                    # Override the _call_ask_how method to send the message to the agent
-                    if ilf_type == "askHow":
-                        def _call_ask_how(self, receiver, term, intention):
-                                body = asp.asl_str(asp.freeze(term.args[2], intention.scope, {}))
-                                mdata = {"performative": "BDI", "ilf_type": term.args[1], }
-                                msg = Message(to=receiver, body=body, metadata=mdata)
-                                _call_ask_how.spade_agent.submit(_call_ask_how.spade_class.send(msg))
+                    elif ilf_type == "askHow":
+                        def _call_ask_how(self, receiver, message, intention):
+                            # message.args[0] is the string plan to be sent
+                            body = asp.asl_str(asp.freeze(message.args[0], intention.scope, {}))
+                            mdata = {"performative": "BDI", "ilf_type": "tellHow", }
+                            msg = Message(to=receiver, body=body, metadata=mdata)
+                            _call_ask_how.spade_agent.submit(_call_ask_how.spade_class.send(msg))
 
                         
                         _call_ask_how.spade_agent = self.agent
@@ -230,20 +226,18 @@ class BDIAgent(Agent):
 
                         asp_runtime.Agent._call_ask_how = _call_ask_how
 
-<<<<<<< Updated upstream
                         # Overrides function ask_how from module agentspeak
-                        #asp_runtime.Agent._ask_how = _ask_how
-                    else:
-                        # Sends a literal
+                        asp_runtime.Agent._ask_how = _ask_how
+                        
+                    else:                    
+                    # Sends a literal
                         functor, args = parse_literal(msg.body)
 
                         message = asp.Literal(functor, args)
 
                     message = asp.freeze(message, intention.scope, {})
                     
-=======
                     # Add source to message
->>>>>>> Stashed changes
                     tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))                    
 
                     self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
@@ -286,4 +280,37 @@ def parse_literal(msg):
     else:
         new_args = ''
     return functor, new_args
+
+
+def _ask_how(self, term):
+    """
+        AskHow is a performative that allows the agent to ask for a plan to another agent.
+        We look in the plan.list of the slave agent the plan that master want,
+        if we find it: master agent use tellHow to tell the plan to slave agent
+    """
+    sender_name = None
+
+    # Receive the agent that ask for the plan
+    for annotation in list(term.annots):
+        if(annotation.functor == "source"):
+            sender_name = annotation.args[0].functor
+
+    if sender_name is None:
+        raise asp.AslError("expected source annotation")
+    
+    plans_wanted = collections.defaultdict(lambda: [])
+    plans = self.plans.values()
+
+    # Find the plans       
+    for plan in plans:
+        for differents in plan:
+            if differents.head.functor in term.args[0]:
+                plans_wanted[(differents.trigger, differents.goal_type, differents.head.functor, len(differents.head.args))].append(differents)
+
+ 
+    for strplan in plans_wanted:
+        message = asp.Literal("plain_text", (strplan,), frozenset())
+        tagged_message = message.with_annotation(
+                        asp.Literal("source", (asp.Literal(sender_name), )))
+        self._call_ask_how(sender_name, message, asp.runtime.Intention())
 
