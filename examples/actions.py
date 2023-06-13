@@ -1,8 +1,8 @@
+import asyncio
 import getpass
-import time
 
 import agentspeak
-from spade import quit_spade
+import spade
 
 from spade_bdi.bdi import BDIAgent
 
@@ -23,12 +23,14 @@ class MyCustomBDIAgent(BDIAgent):
             yield
 
 
-a = MyCustomBDIAgent(jid, passwd, "actions.asl")
+async def main():
+    a = MyCustomBDIAgent(jid, passwd, "actions.asl")
 
-a.start()
+    await a.start()
+
+    await asyncio.sleep(2)
+    await a.stop()
 
 
-time.sleep(2)
-a.stop().result()
-
-quit_spade()
+if __name__ == "__main__":
+    spade.run(main())

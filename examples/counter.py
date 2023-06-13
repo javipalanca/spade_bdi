@@ -1,7 +1,8 @@
+import asyncio
 import getpass
-import time
 from datetime import datetime, timedelta
 
+import spade
 from spade.behaviour import PeriodicBehaviour, TimeoutBehaviour
 from spade.template import Template
 
@@ -49,11 +50,15 @@ class CounterAgent(BDIAgent):
             self.agent.bdi.remove_belief('type', 'dec')
 
 
+async def main():
+    a = CounterAgent("counter@" + server, passwd, "counter.asl")
+    await a.start()
+    await asyncio.sleep(1)
+    print("started")
+
+
 if __name__ == "__main__":
     server = input("XMPP Server> ")
     passwd = getpass.getpass()
 
-    a = CounterAgent("counter@" + server, passwd, "counter.asl")
-    a.start()
-    time.sleep(1)
-    print("started")
+    spade.run(main())

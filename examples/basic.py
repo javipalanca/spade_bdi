@@ -1,30 +1,34 @@
-import time
+import asyncio
 import getpass
 
-from spade import quit_spade
+import spade
 
 from spade_bdi.bdi import BDIAgent
 
-jid = input("JID> ")
-passwd = getpass.getpass()
 
-a = BDIAgent(jid, passwd, "basic.asl")
-a.start()
+async def main():
 
-time.sleep(1)
+    jid = input("JID> ")
+    passwd = getpass.getpass()
 
-a.bdi.set_belief("car", "azul", "big")
-a.bdi.print_beliefs()
-print("GETTING FIRST CAR BELIEF")
-print(a.bdi.get_belief("car"))
-a.bdi.print_beliefs()
-a.bdi.remove_belief("car", 'azul', "big")
-a.bdi.print_beliefs()
-print(a.bdi.get_beliefs())
-a.bdi.set_belief("car", 'amarillo')
+    a = BDIAgent(jid, passwd, "basic.asl")
+    await a.start()
 
-time.sleep(1)
+    await asyncio.sleep(1)
 
-a.stop().result()
+    a.bdi.set_belief("car", "azul", "big")
+    a.bdi.print_beliefs()
+    print("GETTING FIRST CAR BELIEF")
+    print(a.bdi.get_belief("car"))
+    a.bdi.print_beliefs()
+    a.bdi.remove_belief("car", 'azul', "big")
+    a.bdi.print_beliefs()
+    print(a.bdi.get_beliefs())
+    a.bdi.set_belief("car", 'amarillo')
 
-quit_spade()
+    await asyncio.sleep(1)
+
+    await a.stop()
+
+if __name__ == "__main__":
+    spade.run(main())

@@ -1,7 +1,8 @@
+import asyncio
 import getpass
-import time
 from datetime import datetime, timedelta
 
+import spade
 from spade.behaviour import PeriodicBehaviour, TimeoutBehaviour
 from spade.template import Template
 
@@ -34,37 +35,37 @@ class MasterAgent(BDIAgent):
             self.agent.bdi.remove_belief('type', 'dec')
 
 
-def main(server, password):
+async def main(server, password):
     b = BDIAgent("slave_1@{}".format(server), password, "slave.asl")
     b.bdi.set_belief("master", "master@{}".format(server))
-    future = b.start()
-    future.result()
+    await b.start()
 
     c = BDIAgent("slave_2@{}".format(server), password, "slave.asl")
     c.pause_bdi()
-    future = c.start()
-    future.result()
+    await c.start()
 
     a = MasterAgent("master@{}".format(server), password, "master.asl")
     a.bdi.set_belief("slave1", "slave_1@{}".format(server))
     a.bdi.set_belief("slave2", "slave_2@{}".format(server))
     a.bdi.set_belief('type', 'dec')
-    future = a.start()
-    future.result()
+    await a.start()
 
-    time.sleep(5)
+
+    await asyncio.sleep(5)
     print("Enabling BDI for slave2")
     c.set_asl("slave.asl")
     c.bdi.set_belief("master", "master@{}".format(server))
-    time.sleep(5)
+    await asyncio.sleep(5)
     print("Disabling BDI for slave2")
     c.pause_bdi()
 
 
-server = input("XMPP Server> ")
-passwd = getpass.getpass()
+if __name__ == "__main__":
 
-try:
-    main(server, passwd)
-except KeyboardInterrupt:
-    print("Exiting...")
+    server = input("XMPP Server> ")
+    passwd = getpass.getpass()
+
+    try:
+        spade.run(main(server, passwd))
+    except KeyboardInterrupt:
+        print("Exiting...")
