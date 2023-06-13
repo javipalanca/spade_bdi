@@ -8,7 +8,7 @@ Spade-BDI
 .. image:: https://img.shields.io/pypi/pyversions/spade_bdi.svg
     :target: https://pypi.python.org/pypi/spade_bdi
 
-.. image:: https://img.shields.io/apm/l/atomic-design-ui.svg?
+.. image:: https://img.shields.io/pypi/l/spade_bdi
     :target: https://opensource.org/licenses/MIT
     :alt: MIT License
 
@@ -102,10 +102,10 @@ basic.py::
 
     print(a.bdi.get_belief("car"))
     a.bdi.print_beliefs()
-    
+
     a.bdi.remove_belief("car", 'blue', "big")
     a.bdi.print_beliefs()
-    
+
     print(a.bdi.get_beliefs())
     a.bdi.set_belief("car", 'yellow')
 
@@ -123,7 +123,7 @@ basic.asl::
         .custom_action(8);
         +truck(blue).
 
-    +car(Color) 
+    +car(Color)
      <- .print("The car is ",Color).
 
 

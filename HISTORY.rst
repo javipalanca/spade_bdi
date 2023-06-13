@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.0 (2023-06-13)
+------------------
+
+* Updated to SPADE 3.3.0.
+
 0.2.2 (2022-06-03)
 ------------------
 
@@ -40,7 +45,7 @@ History
 ------------------
 
 * Moved from pyson to python-agentspeak
-* Added some helpers like pause_bdi, resume_bdi. 
+* Added some helpers like pause_bdi, resume_bdi.
 * Now the asl file in the constructor is mandatory.
 * Allow to send tell messages with no args.
 * Allow sending messages with variables.
