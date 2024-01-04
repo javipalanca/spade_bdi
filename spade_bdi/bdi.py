@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import asyncio
+import collections
 import time
 from ast import literal_eval
-from collections import deque
+from collections import deque, defaultdict
 
 import agentspeak as asp
 from agentspeak import runtime as asp_runtime, stdlib as asp_stdlib
@@ -11,6 +12,9 @@ from spade.agent import Agent
 from spade.behaviour import CyclicBehaviour
 from spade.message import Message
 from spade.template import Template
+
+import re
+
 
 PERCEPT_TAG = frozenset([asp.Literal("source", (asp.Literal("percept"),))])
 
@@ -167,6 +171,7 @@ class BDIAgent(Agent):
                 for belief in beliefs:
                     print(self._remove_source(str(belief), source))
 
+
         async def run(self):
             """
             Coroutine run cyclic.
@@ -185,16 +190,56 @@ class BDIAgent(Agent):
                     elif ilf_type == "achieve":
                         goal_type = asp.GoalType.achievement
                         trigger = asp.Trigger.addition
+                    elif ilf_type == "unachieve":
+                        goal_type = asp.GoalType.achievement
+                        trigger = asp.Trigger.removal
+                    elif ilf_type == "tellHow":
+                        goal_type = asp.GoalType.tellHow
+                        trigger = asp.Trigger.addition
+                    elif ilf_type == "untellHow":
+                        goal_type = asp.GoalType.tellHow
+                        trigger = asp.Trigger.removal
+                    elif ilf_type == "askHow":
+                        goal_type = asp.GoalType.askHow
+                        trigger = asp.Trigger.addition
                     else:
                         raise asp.AslError("unknown illocutionary force: {}".format(ilf_type))
 
                     intention = asp.runtime.Intention()
-                    functor, args = parse_literal(msg.body)
 
-                    message = asp.Literal(functor, args)
+
+                    # Prepare message. The message is either a plain text or a structured message.
+                    if ilf_type in ["tellHow", "askHow", "untellHow"]:
+                        message = asp.Literal("plain_text", (msg.body, ), frozenset())
+                    elif ilf_type == "askHow":
+                        def _call_ask_how(self, receiver, message, intention):
+                            # message.args[0] is the string plan to be sent
+                            body = asp.asl_str(asp.freeze(message.args[0], intention.scope, {}))
+                            mdata = {"performative": "BDI", "ilf_type": "tellHow", }
+                            msg = Message(to=receiver, body=body, metadata=mdata)
+                            _call_ask_how.spade_agent.submit(_call_ask_how.spade_class.send(msg))
+
+                        
+                        _call_ask_how.spade_agent = self.agent
+
+                        _call_ask_how.spade_class = self
+
+                        asp_runtime.Agent._call_ask_how = _call_ask_how
+
+                        # Overrides function ask_how from module agentspeak
+                        asp_runtime.Agent._ask_how = _ask_how
+                        
+                    else:                    
+                    # Sends a literal
+                        functor, args = parse_literal(msg.body)
+
+                        message = asp.Literal(functor, args)
+
                     message = asp.freeze(message, intention.scope, {})
+                    
+                    # Add source to message
+                    tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))                    
 
-                    tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))
                     self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
 
                 if self.agent.bdi_intention_buffer:
@@ -210,19 +255,62 @@ class BDIAgent(Agent):
 
 
 def parse_literal(msg):
+    
     functor = msg.split("(")[0]
+
     if "(" in msg:
         args = msg.split("(")[1]
         args = args.split(")")[0]
-        args = literal_eval(args)
+
+
+        x = re.search("^_X_*", args)
+
+        if(x is not None):
+            args = asp.Var()
+        else:
+            args = literal_eval(args)
 
         def recursion(arg):
             if isinstance(arg, list):
                 return tuple(recursion(i) for i in arg)
-            return arg
+            return arg        
 
         new_args = (recursion(args),)
 
     else:
         new_args = ''
     return functor, new_args
+
+
+def _ask_how(self, term):
+    """
+        AskHow is a performative that allows the agent to ask for a plan to another agent.
+        We look in the plan.list of the slave agent the plan that master want,
+        if we find it: master agent use tellHow to tell the plan to slave agent
+    """
+    sender_name = None
+
+    # Receive the agent that ask for the plan
+    for annotation in list(term.annots):
+        if(annotation.functor == "source"):
+            sender_name = annotation.args[0].functor
+
+    if sender_name is None:
+        raise asp.AslError("expected source annotation")
+    
+    plans_wanted = collections.defaultdict(lambda: [])
+    plans = self.plans.values()
+
+    # Find the plans       
+    for plan in plans:
+        for differents in plan:
+            if differents.head.functor in term.args[0]:
+                plans_wanted[(differents.trigger, differents.goal_type, differents.head.functor, len(differents.head.args))].append(differents)
+
+ 
+    for strplan in plans_wanted:
+        message = asp.Literal("plain_text", (strplan,), frozenset())
+        tagged_message = message.with_annotation(
+                        asp.Literal("source", (asp.Literal(sender_name), )))
+        self._call_ask_how(sender_name, message, asp.runtime.Intention())
+
