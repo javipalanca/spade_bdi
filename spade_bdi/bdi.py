@@ -3,10 +3,11 @@ import asyncio
 import collections
 import time
 from ast import literal_eval
-from collections import deque, defaultdict
+from collections import deque
 
 import agentspeak as asp
 from agentspeak import runtime as asp_runtime, stdlib as asp_stdlib
+from agentspeak.runtime import plan_to_str
 from loguru import logger
 from spade.agent import Agent
 from spade.behaviour import CyclicBehaviour
@@ -24,7 +25,9 @@ class BeliefNotInitiated(Exception):
 
 
 class BDIAgent(Agent):
-    def __init__(self, jid: str, password: str, asl: str, actions=None, *args, **kwargs):
+    def __init__(
+        self, jid: str, password: str, asl: str, actions=None, *args, **kwargs
+    ):
         self.asl_file = asl
         self.bdi_enabled = False
         self.bdi_intention_buffer = deque()
@@ -70,7 +73,11 @@ class BDIAgent(Agent):
             self.bdi_agent.name = self.jid
             self.resume_bdi()
         except FileNotFoundError:
-            logger.info("Warning: ASL specified for {} does not exist. Disabling BDI.".format(self.jid))
+            logger.info(
+                "Warning: ASL specified for {} does not exist. Disabling BDI.".format(
+                    self.jid
+                )
+            )
             self.asl_file = None
             self.pause_bdi()
 
@@ -85,7 +92,10 @@ class BDIAgent(Agent):
                 if not asp.is_atom(ilf):
                     return
                 ilf_type = ilf.functor
-                mdata = {"performative": "BDI", "ilf_type": ilf_type, }
+                mdata = {
+                    "performative": "BDI",
+                    "ilf_type": ilf_type,
+                }
                 for receiver in receivers:
                     body = asp.asl_str(asp.freeze(term.args[2], intention.scope, {}))
                     msg = Message(to=str(receiver), body=body, metadata=mdata)
@@ -106,11 +116,23 @@ class BDIAgent(Agent):
                 if asp.unifies(term, belief):
                     found = True
                 else:
-                    self.agent.bdi_intention_buffer.append((asp.Trigger.removal, asp.GoalType.belief, belief,
-                                                            asp.runtime.Intention()))
+                    self.agent.bdi_intention_buffer.append(
+                        (
+                            asp.Trigger.removal,
+                            asp.GoalType.belief,
+                            belief,
+                            asp.runtime.Intention(),
+                        )
+                    )
             if not found:
-                self.agent.bdi_intention_buffer.append((asp.Trigger.addition, asp.GoalType.belief, term,
-                                                        asp.runtime.Intention()))
+                self.agent.bdi_intention_buffer.append(
+                    (
+                        asp.Trigger.addition,
+                        asp.GoalType.belief,
+                        term,
+                        asp.runtime.Intention(),
+                    )
+                )
 
         def remove_belief(self, name: str, *args):
             """Remove an existing agent's belief."""
@@ -121,8 +143,14 @@ class BDIAgent(Agent):
                 else:
                     new_args += (x,)
             term = asp.Literal(name, tuple(new_args), PERCEPT_TAG)
-            self.agent.bdi_intention_buffer.append((asp.Trigger.removal, asp.GoalType.belief, term,
-                                                    asp.runtime.Intention()))
+            self.agent.bdi_intention_buffer.append(
+                (
+                    asp.Trigger.removal,
+                    asp.GoalType.belief,
+                    term,
+                    asp.runtime.Intention(),
+                )
+            )
 
         def get_belief(self, key: str, source=False):
             """Get an agent's existing belief. The first belief matching
@@ -132,7 +160,7 @@ class BDIAgent(Agent):
                 if beliefs[0] == key:
                     if len(self.agent.bdi_agent.beliefs[beliefs]) == 0:
                         raise BeliefNotInitiated(key)
-                    raw_belief = (str(list(self.agent.bdi_agent.beliefs[beliefs])[0]))
+                    raw_belief = str(list(self.agent.bdi_agent.beliefs[beliefs])[0])
                     raw_belief = self._remove_source(raw_belief, source)
                     belief = raw_belief
                     return belief
@@ -140,8 +168,8 @@ class BDIAgent(Agent):
 
         @staticmethod
         def _remove_source(belief, source):
-            if ')[source' in belief and not source:
-                belief = belief.split('[')[0].replace('"', '')
+            if ")[source" in belief and not source:
+                belief = belief.split("[")[0].replace('"', "")
             return belief
 
         def get_belief_value(self, key: str):
@@ -149,7 +177,7 @@ class BDIAgent(Agent):
             <key> is returned"""
             belief = self.get_belief(key)
             if belief:
-                return tuple(belief.split('(')[1].split(')')[0].split(','))
+                return tuple(belief.split("(")[1].split(")")[0].split(","))
             else:
                 return None
 
@@ -158,7 +186,7 @@ class BDIAgent(Agent):
             belief_list = []
             for beliefs in self.agent.bdi_agent.beliefs:
                 try:
-                    raw_belief = (str(list(self.agent.bdi_agent.beliefs[beliefs])[0]))
+                    raw_belief = str(list(self.agent.bdi_agent.beliefs[beliefs])[0])
                     raw_belief = self._remove_source(raw_belief, source)
                     belief_list.append(raw_belief)
                 except IndexError:
@@ -170,7 +198,6 @@ class BDIAgent(Agent):
             for beliefs in self.agent.bdi_agent.beliefs.values():
                 for belief in beliefs:
                     print(self._remove_source(str(belief), source))
-
 
         async def run(self):
             """
@@ -203,23 +230,32 @@ class BDIAgent(Agent):
                         goal_type = asp.GoalType.askHow
                         trigger = asp.Trigger.addition
                     else:
-                        raise asp.AslError("unknown illocutionary force: {}".format(ilf_type))
+                        raise asp.AslError(
+                            "unknown illocutionary force: {}".format(ilf_type)
+                        )
 
                     intention = asp.runtime.Intention()
 
-
                     # Prepare message. The message is either a plain text or a structured message.
-                    if ilf_type in ["tellHow", "askHow", "untellHow"]:
-                        message = asp.Literal("plain_text", (msg.body, ), frozenset())
+                    if ilf_type in ["tellHow", "untellHow"]:
+                        message = asp.Literal("plain_text", (msg.body,), frozenset())
                     elif ilf_type == "askHow":
+                        message = asp.Literal("plain_text", (msg.body,), frozenset())
+
                         def _call_ask_how(self, receiver, message, intention):
                             # message.args[0] is the string plan to be sent
-                            body = asp.asl_str(asp.freeze(message.args[0], intention.scope, {}))
-                            mdata = {"performative": "BDI", "ilf_type": "tellHow", }
+                            body = asp.asl_str(
+                                asp.freeze(message.args[0], intention.scope, {})
+                            )
+                            mdata = {
+                                "performative": "BDI",
+                                "ilf_type": "tellHow",
+                            }
                             msg = Message(to=receiver, body=body, metadata=mdata)
-                            _call_ask_how.spade_agent.submit(_call_ask_how.spade_class.send(msg))
+                            _call_ask_how.spade_agent.submit(
+                                _call_ask_how.spade_class.send(msg)
+                            )
 
-                        
                         _call_ask_how.spade_agent = self.agent
 
                         _call_ask_how.spade_class = self
@@ -228,44 +264,48 @@ class BDIAgent(Agent):
 
                         # Overrides function ask_how from module agentspeak
                         asp_runtime.Agent._ask_how = _ask_how
-                        
-                    else:                    
-                    # Sends a literal
+
+                    else:
+                        # Sends a literal
                         functor, args = parse_literal(msg.body)
 
                         message = asp.Literal(functor, args)
 
                     message = asp.freeze(message, intention.scope, {})
-                    
-                    # Add source to message
-                    tagged_message = message.with_annotation(asp.Literal("source", (asp.Literal(str(msg.sender)),)))                    
 
-                    self.agent.bdi_intention_buffer.append((trigger, goal_type, tagged_message, intention))
+                    # Add source to message
+                    tagged_message = message.with_annotation(
+                        asp.Literal("source", (asp.Literal(str(msg.sender)),))
+                    )
+                    if ilf_type == "tellHow":
+                        pass
+
+                    self.agent.bdi_intention_buffer.append(
+                        (trigger, goal_type, tagged_message, intention)
+                    )
 
                 if self.agent.bdi_intention_buffer:
                     temp_intentions = deque(self.agent.bdi_intention_buffer)
                     for trigger, goal_type, term, intention in temp_intentions:
                         self.agent.bdi_agent.call(trigger, goal_type, term, intention)
                         self.agent.bdi_intention_buffer.popleft()
-               
+
                 self.agent.bdi_agent.step()
-                            
+
             else:
                 await asyncio.sleep(0.1)
 
 
 def parse_literal(msg):
-    
     functor = msg.split("(")[0]
 
     if "(" in msg:
         args = msg.split("(")[1]
         args = args.split(")")[0]
 
-
         x = re.search("^_X_*", args)
 
-        if(x is not None):
+        if x is not None:
             args = asp.Var()
         else:
             args = literal_eval(args)
@@ -273,44 +313,52 @@ def parse_literal(msg):
         def recursion(arg):
             if isinstance(arg, list):
                 return tuple(recursion(i) for i in arg)
-            return arg        
+            return arg
 
         new_args = (recursion(args),)
 
     else:
-        new_args = ''
+        new_args = ""
     return functor, new_args
 
 
 def _ask_how(self, term):
     """
-        AskHow is a performative that allows the agent to ask for a plan to another agent.
-        We look in the plan.list of the slave agent the plan that master want,
-        if we find it: master agent use tellHow to tell the plan to slave agent
+    AskHow is a performative that allows the agent to ask for a plan to another agent.
+    We look in the plan.list of the slave agent the plan that master want,
+    if we find it: master agent use tellHow to tell the plan to slave agent
     """
     sender_name = None
 
     # Receive the agent that ask for the plan
     for annotation in list(term.annots):
-        if(annotation.functor == "source"):
+        if annotation.functor == "source":
             sender_name = annotation.args[0].functor
 
     if sender_name is None:
         raise asp.AslError("expected source annotation")
-    
+
     plans_wanted = collections.defaultdict(lambda: [])
     plans = self.plans.values()
 
-    # Find the plans       
+    # Find the plans
     for plan in plans:
         for differents in plan:
             if differents.head.functor in term.args[0]:
-                plans_wanted[(differents.trigger, differents.goal_type, differents.head.functor, len(differents.head.args))].append(differents)
+                plans_wanted[
+                    (
+                        differents.trigger,
+                        differents.goal_type,
+                        differents.head.functor,
+                        len(differents.head.args),
+                    )
+                ].append(differents)
 
- 
-    for strplan in plans_wanted:
-        message = asp.Literal("plain_text", (strplan,), frozenset())
-        tagged_message = message.with_annotation(
-                        asp.Literal("source", (asp.Literal(sender_name), )))
-        self._call_ask_how(sender_name, message, asp.runtime.Intention())
-
+    for plan in plans_wanted.values():
+        for different in plan:
+            strplan = plan_to_str(different)
+            message = asp.Literal("plain_text", (strplan,), frozenset())
+            tagged_message = message.with_annotation(
+                asp.Literal("source", (asp.Literal(sender_name),))
+            )
+            self._call_ask_how(sender_name, message, asp.runtime.Intention())
