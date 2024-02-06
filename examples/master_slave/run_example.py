@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import getpass
 from datetime import datetime, timedelta
@@ -12,10 +13,10 @@ from spade_bdi.bdi import BDIAgent
 class MasterAgent(BDIAgent):
     async def setup(self):
         template = Template(metadata={"performative": "Modify"})
-        self.add_behaviour(self.Modify(period=5, start_at=datetime.now()), template)
+        self.add_behaviour(self.Modify(period=1, start_at=datetime.now()), template)
 
         template = Template(metadata={"performative": "Ending"})
-        self.add_behaviour(self.Behav4(start_at=datetime.now() + timedelta(seconds=11)), template)
+        self.add_behaviour(self.RemoveBeliefsBehav(start_at=datetime.now() + timedelta(seconds=5)), template)
 
     class Modify(PeriodicBehaviour):
         async def run(self):
@@ -29,7 +30,7 @@ class MasterAgent(BDIAgent):
                 except Exception as e:
                     self.kill()
 
-    class Behav4(TimeoutBehaviour):
+    class RemoveBeliefsBehav(TimeoutBehaviour):
         async def run(self):
             self.agent.bdi.remove_belief('type', 'inc')
             self.agent.bdi.remove_belief('type', 'dec')
@@ -50,22 +51,32 @@ async def main(server, password):
     a.bdi.set_belief('type', 'dec')
     await a.start()
 
-
-    await asyncio.sleep(5)
+    await asyncio.sleep(2)
     print("Enabling BDI for slave2")
     c.set_asl("slave.asl")
     c.bdi.set_belief("master", "master@{}".format(server))
-    await asyncio.sleep(5)
+    await asyncio.sleep(4)
     print("Disabling BDI for slave2")
     c.pause_bdi()
 
+    await a.stop()
+    await b.stop()
+    await c.stop()
+
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--server", help="XMPP Server")
+    parser.add_argument("--password", help="Password")
+    args = parser.parse_args()
 
-    server = input("XMPP Server> ")
-    passwd = getpass.getpass()
+    if args.server is None:
+        server = input("XMPP Server> ")
+    else:
+        server = args.server
 
-    try:
-        spade.run(main(server, passwd))
-    except KeyboardInterrupt:
-        print("Exiting...")
+    if args.password is None:
+        passwd = getpass.getpass()
+    else:
+        passwd = args.password
+    spade.run(main(server, passwd))

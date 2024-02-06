@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import getpass
 
@@ -5,9 +6,6 @@ import agentspeak
 import spade
 
 from spade_bdi.bdi import BDIAgent
-
-jid = input("JID> ")
-passwd = getpass.getpass()
 
 
 class MyCustomBDIAgent(BDIAgent):
@@ -23,14 +21,27 @@ class MyCustomBDIAgent(BDIAgent):
             yield
 
 
-async def main():
-    a = MyCustomBDIAgent(jid, passwd, "actions.asl")
+async def main(server, password):
+    a = MyCustomBDIAgent(f"bdiagent@{server}", password, "actions.asl")
 
     await a.start()
-
     await asyncio.sleep(2)
     await a.stop()
 
 
 if __name__ == "__main__":
-    spade.run(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--server", help="XMPP Server")
+    parser.add_argument("--password", help="Password")
+    args = parser.parse_args()
+
+    if args.server is None:
+        server = input("XMPP Server> ")
+    else:
+        server = args.server
+
+    if args.password is None:
+        passwd = getpass.getpass()
+    else:
+        passwd = args.password
+    spade.run(main(server, passwd))

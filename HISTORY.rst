@@ -2,6 +2,13 @@
 History
 =======
 
+0.3.1 (2024-01-06)
+------------------
+
+* Added new examples
+* Added documentation
+* Updated to SPADE 3.3.2
+
 0.3.0 (2023-06-13)
 ------------------
 
