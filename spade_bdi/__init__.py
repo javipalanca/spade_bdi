@@ -5,6 +5,6 @@ from . import bdi
 
 __author__ = """Sergio Frayle Pérez"""
 __email__ = 'sfp932705@gmail.com'
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 __all__ = ["bdi"]
