@@ -7,7 +7,12 @@ Welcome to Spade-BDI's documentation!
 
    readme
    installation
-   usage
+   create_agent
+   agentspeak
+   communication
+   plans
+   lists
+   custom
    modules
    contributing
    authors
