@@ -2,6 +2,13 @@
 History
 =======
 
+0.3.2 (2025-03-01)
+------------------
+
+* Updated to SPADE 4.0.1
+* Updated dependencies
+* License changed to MIT
+
 0.3.1 (2024-01-06)
 ------------------
 

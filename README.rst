@@ -27,8 +27,8 @@ Spade-BDI
 Create hybrid agents with a BDI layer for the SPADE MAS Platform.
 
 
-* Free software: GNU General Public License v3
-* Documentation: https://spade-bdi.readthedocs.io. (to be completed)
+* Free software: MIT License
+* Documentation: https://spade-bdi.readthedocs.io.
 
 
 Features
