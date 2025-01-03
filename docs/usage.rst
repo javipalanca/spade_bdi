@@ -1,9 +1,6 @@
-=====
-Usage
-=====
-
+=============================
 Creating a BDI Agent in SPADE
------------------------------
+=============================
 
 Belief-Desire-Intention (BDI) agents are a cornerstone of modern agent-based systems.
 In SPADE (Smart Python multi-Agent Development Environment), creating a BDI agent involves managing the agent's beliefs, desires, and intentions in a dynamic environment.
@@ -55,8 +52,10 @@ Creating a BDI agent in SPADE involves initializing the agent with its credentia
 The agent's beliefs are dynamically managed, allowing it to adapt to changes in the environment.
 SPADE's framework offers a flexible and powerful platform for developing sophisticated BDI agents in multi-agent systems.
 
+
+=======================
 The AgentSpeak language
------------------------
+=======================
 
 The AgentSpeak language is a logic programming language based on the Belief-Desire-Intention (BDI) model.
 It is based on the ``agentspeak`` package, which is a Python implementation of the Jason language.
@@ -70,7 +69,7 @@ This section provides an overview of its syntax and semantics, focusing on how b
 represented and managed in AgentSpeak.
 
 Basic Semantics
-==========================
+===============
 
 - **Beliefs**: In AgentSpeak, beliefs represent the agent's knowledge about the world, itself, and other agents. They are often expressed in a simple predicate form. For example, ``is_hot(temperature)`` might represent the belief that the temperature is hot.
 - **Desires and Goals**: Desires or goals are states or conditions that the agent aims to bring about. In AgentSpeak, these are often represented as special kinds of beliefs or through goal operators. For instance, ``!find_shade`` could be a goal to find shade.
@@ -111,6 +110,7 @@ Basic Elements
 - **Comments**
     - Single Line Comment: // This is a comment
     - Multi-Line Comment: Not typically supported in standard AgentSpeak.
+
 
 Creating Agents: Beliefs, Desires, and Goals
 ============================================
@@ -170,6 +170,7 @@ Variables and the '?' Operator in AgentSpeak
 In AgentSpeak, variables are essential for dynamic information processing within an agent's logic.
 They are uniquely identified by starting with an uppercase letter, distinguishing them from constants and predicates. This section delves into the syntax and use of variables, focusing on the ``?`` operator for retrieving belief values.
 
+
 Syntax of Variables in AgentSpeak
 =================================
 
@@ -177,7 +178,7 @@ Syntax of Variables in AgentSpeak
 Example of Variable Declaration: ``Location, Temp, X, Y``
 
 Using the ``'?'`` Operator to Retrieve Belief Values
-====================================================
+----------------------------------------------------
 
 - **Purpose**: The ``?`` operator in AgentSpeak is used to bind the current value of a belief to a variable. This operation is akin to querying the agent's belief base.
 - **Syntax**: To use the ``?`` operator, include it before the belief name and specify the variable in the belief's argument list. The format is typically ``?Belief(Variable)``.
@@ -207,21 +208,25 @@ Variables enable plans to adapt their behavior based on the changing state of th
 In this example, Temp is a variable that holds the current value of the temperature belief, triggering the plan if Temp exceeds 30.
 
 Conclusion
-==========
+----------
 
 Proper use of variables and the ``?`` operator in AgentSpeak is fundamental for creating dynamic and responsive agents.
 Variables, identified by their uppercase starting letter, offer a way to handle changing information and make context-sensitive decisions.
 The ``?`` operator is a key tool for querying and utilizing the agent's belief base, enhancing the agent's ability to interact intelligently with its environment.
 
 
-Communication in AgentSpeak: Sending Messages
----------------------------------------------
+===========================
+Communication in AgentSpeak
+===========================
+
+Sending Messages
+================
 
 In AgentSpeak and multi-agent systems, communication is a key aspect of agent interaction.
 This section covers the process and considerations for sending messages between agents in AgentSpeak, with a focus on the syntax, types of messages, and practical implementation.
 
 Syntax for Sending Messages
-===========================
+---------------------------
 
 AgentSpeak provides a simple and flexible syntax for sending messages. The general form includes specifying the type of communicative act (ilocution), the recipient agent, and the content of the message.
 
@@ -267,8 +272,10 @@ Here are the key illocutions used in AgentSpeak:
 Each of these illocutions plays a vital role in the communication protocol within a multi-agent system, allowing agents to share knowledge, coordinate actions, and update each other on changes in beliefs or plans. When designing AgentSpeak agents, it is crucial to implement these illocutions correctly to ensure effective and coherent agent interactions.
 
 
+============================
 Creating Plans in AgentSpeak
-----------------------------
+============================
+
 In AgentSpeak, plans are central to the behavior of agents. They define how an agent should react to certain events or changes in their environment or internal state.
 This section explores the syntax and structure of plans in AgentSpeak, providing examples and best practices.
 
@@ -324,8 +331,9 @@ Example with Failure Handling::
 Here, there are two plans for the same goal ``!travel(destination)``.
 The first plan is used if the car is functional, and the second plan (calling a taxi) is a backup if the car isn't functional.
 
+============================
 Managing Lists in AgentSpeak
-----------------------------
+============================
 
 In AgentSpeak, lists are important data structures that enable agents to handle collections of items. While AgentSpeak does not offer the same list manipulation capabilities as imperative programming languages, it still provides ways to manage lists through pattern matching and recursion. This section explores how AgentSpeak handles lists.
 
@@ -382,8 +390,9 @@ Recursion in List Handling
 Managing lists in AgentSpeak, although not as straightforward as in other languages, is feasible and effective through list decomposition, creating new lists for adding or removing elements, and recursive patterns to process lists. These methods enable agents to dynamically handle sets of data and are essential for developing complex behaviors in multi-agent systems.
 
 
+===================================
 Create custom actions and functions
------------------------------------
+===================================
 
 You must to overload the ``add_custom_actions`` method and to use the ``add_function`` or ``add`` (for actions) decorator.
 This custom method receives always the ``actions`` parameter::
