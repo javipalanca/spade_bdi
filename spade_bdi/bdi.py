@@ -68,9 +68,11 @@ class BDIAgent(Agent):
     def _load_asl(self):
         self.pause_bdi()
         try:
+            #MRP: to use the name of the agent in .my_name internal funcion of agentspeak
             with open(self.asl_file) as source:
-                self.bdi_agent = self.bdi_env.build_agent(source, self.bdi_actions)
+                self.bdi_agent = self.bdi_env.build_agent(source, self.bdi_actions, name=str(self.jid).split('@')[0])
             self.bdi_agent.name = self.jid
+            self.bdi_agent.spade_agent = self
             self.resume_bdi()
         except FileNotFoundError:
             logger.info(
