@@ -168,9 +168,12 @@ class BDIAgent(Agent):
 
         @staticmethod
         def _remove_source(belief, source):
-            if ")[source" in belief and not source:
-                belief = belief.split("[")[0].replace('"', "")
-            return belief
+            if "[source" in belief and not source:
+                if ")[source" in belief:
+                    belief = belief.split(")[source")[0] + ")"
+                else:
+                    belief = belief.split("[source")[0]
+            return belief.replace('"', "")
 
         def get_belief_value(self, key: str):
             """Get an agent's existing value or values of the <key> belief. The first belief matching
@@ -308,14 +311,22 @@ def parse_literal(msg):
         if x is not None:
             args = asp.Var()
         else:
-            args = literal_eval(args)
+            try:
+                args = literal_eval(args)
+            except:
+                # MRP: treat as atom
+                args = args.strip()
 
         def recursion(arg):
             if isinstance(arg, list):
-                return tuple(recursion(i) for i in arg)
+                return (tuple(arg),)
+            if isinstance(arg, tuple) and len(arg) > 1:
+                return arg
+            if isinstance(arg, str) or not hasattr(arg, '__iter__'):
+                return (arg,)
             return arg
 
-        new_args = (recursion(args),)
+        new_args = recursion(args)
 
     else:
         new_args = ""
