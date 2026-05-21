@@ -209,8 +209,7 @@ class BDIAgent(Agent):
             if self.agent.bdi_enabled:
                 msg = await self.receive(timeout=0)
                 if msg:
-                    mdata = msg.get_metadata()
-                    ilf_type = mdata["ilf_type"]
+                    ilf_type = msg.get_metadata("ilf_type")
                     if ilf_type == "tell":
                         goal_type = asp.GoalType.belief
                         trigger = asp.Trigger.addition
