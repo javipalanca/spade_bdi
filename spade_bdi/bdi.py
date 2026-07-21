@@ -33,7 +33,7 @@ class BDIAgent(Agent):
         self.add_custom_actions(self.bdi_actions)
         self._load_asl()
 
-    def add_custom_actions(self, actions): #pragma: no cover
+    def add_custom_actions(self, actions):  # pragma: no cover
         pass
 
     def pause_bdi(self):

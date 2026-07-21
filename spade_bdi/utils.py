@@ -67,7 +67,5 @@ def _ask_how(self, term):
         for different in plan:
             strplan = plan_to_str(different)
             message = asp.Literal("plain_text", (strplan,), frozenset())
-            tagged_message = message.with_annotation(
-                asp.Literal("source", (asp.Literal(sender_name),))
-            )
+            message.with_annotation(asp.Literal("source", (asp.Literal(sender_name),)))
             self._call_ask_how(sender_name, message, asp.runtime.Intention())
