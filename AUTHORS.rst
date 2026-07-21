@@ -11,3 +11,4 @@ Contributors
 ------------
 
 * Javi Palanca <jpalanca@gmail.com>
+* Aarón Raya <aaron.raya.lopez@gmail.com>
