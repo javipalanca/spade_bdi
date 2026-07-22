@@ -1,0 +1,63 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package
+
+on:
+  push:
+    branches: [ master, develop, gh-testing ]
+    tags:
+      - "*"
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "**/*.rst"
+  pull_request:
+    branches:
+      - "*"
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "**/*.rst"
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.15"
+      - name: Set up dependencies
+        run: |
+          uv sync --extra dev
+      - name: Lint
+        run: |
+          uv run tox -e lint
+
+  windows-tests:
+    name: test (Windows)
+    uses: ./.github/workflows/test-windows.yml
+
+  macos-tests:
+    name: test (macOS)
+    uses: ./.github/workflows/test-macos.yml
+
+  ubuntu-tests:
+    name: test (Ubuntu)
+    uses: ./.github/workflows/test-linux-with-coverage.yml
+
+  coveralls_finish:
+    needs: ubuntu-tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: AndreMiras/coveralls-python-action@develop
+      with:
+        parallel-finished: true
