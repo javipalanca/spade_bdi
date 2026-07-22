@@ -69,7 +69,7 @@ class BDIAgent(Agent):
         self.pause_bdi()
         try:
             with open(self.asl_file) as source:
-                self.bdi_agent = self.bdi_env.build_agent(source, self.bdi_actions)
+                self.bdi_agent = self.bdi_env.build_agent(source, self.bdi_actions, name=str(self.jid).split('@')[0])
             self.bdi_agent.name = self.jid
             self.resume_bdi()
         except FileNotFoundError:
@@ -168,9 +168,12 @@ class BDIAgent(Agent):
 
         @staticmethod
         def _remove_source(belief, source):
-            if ")[source" in belief and not source:
-                belief = belief.split("[")[0].replace('"', "")
-            return belief
+            if "[source" in belief and not source:
+                if ")[source" in belief:
+                    belief = belief.split(")[source")[0] + ")"
+                else:
+                    belief = belief.split("[source")[0]
+            return belief.replace('"', "")
 
         def get_belief_value(self, key: str):
             """Get an agent's existing value or values of the <key> belief. The first belief matching
@@ -206,8 +209,7 @@ class BDIAgent(Agent):
             if self.agent.bdi_enabled:
                 msg = await self.receive(timeout=0)
                 if msg:
-                    mdata = msg.metadata
-                    ilf_type = mdata["ilf_type"]
+                    ilf_type = msg.get_metadata("ilf_type")
                     if ilf_type == "tell":
                         goal_type = asp.GoalType.belief
                         trigger = asp.Trigger.addition
@@ -268,7 +270,6 @@ class BDIAgent(Agent):
                     else:
                         # Sends a literal
                         functor, args = parse_literal(msg.body)
-
                         message = asp.Literal(functor, args)
 
                     message = asp.freeze(message, intention.scope, {})
@@ -296,27 +297,55 @@ class BDIAgent(Agent):
                 await asyncio.sleep(0.1)
 
 
+def _split_args(s):
+    """Split a comma-separated args string respecting nested parentheses."""
+    args = []
+    depth = 0
+    current = []
+    for c in s:
+        if c == '(':
+            depth += 1
+        elif c == ')':
+            depth -= 1
+        if c == ',' and depth == 0:
+            args.append(''.join(current).strip())
+            current = []
+        else:
+            current.append(c)
+    if current:
+        args.append(''.join(current).strip())
+    return [a for a in args if a]
+
+
+def _parse_arg(s):
+    """Convert a single serialized argument to the appropriate Python/agentspeak type."""
+    s = s.strip()
+    if not s:
+        return None
+    # Variable
+    if re.search("^_X_*", s):
+        return asp.Var()
+    # Quoted string → Python str
+    if s.startswith('"') and s.endswith('"'):
+        return s[1:-1]
+    # Number or other Python literal
+    try:
+        return literal_eval(s)
+    except Exception:
+        pass
+    # Unquoted → atom (agentspeak Literal)
+    return asp.Literal(s)
+
+
 def parse_literal(msg):
     functor = msg.split("(")[0]
-
     if "(" in msg:
-        args = msg.split("(")[1]
-        args = args.split(")")[0]
-
-        x = re.search("^_X_*", args)
-
-        if x is not None:
-            args = asp.Var()
+        args_str = msg.split("(", 1)[1].rsplit(")", 1)[0]
+        parsed = [_parse_arg(a) for a in _split_args(args_str)]
+        if len(parsed) == 1:
+            new_args = (parsed[0],)
         else:
-            args = literal_eval(args)
-
-        def recursion(arg):
-            if isinstance(arg, list):
-                return tuple(recursion(i) for i in arg)
-            return arg
-
-        new_args = (recursion(args),)
-
+            new_args = tuple(parsed)
     else:
         new_args = ""
     return functor, new_args
