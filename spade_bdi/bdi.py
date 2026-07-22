@@ -6,7 +6,6 @@ from loguru import logger
 from spade.agent import Agent
 from spade.template import Template
 
-
 from spade_bdi.bdi_behaviour import BDIBehaviour
 
 PERCEPT_TAG = frozenset([asp.Literal("source", (asp.Literal("percept"),))])

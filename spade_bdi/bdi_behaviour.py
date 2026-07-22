@@ -1,12 +1,13 @@
 import asyncio
-from collections import deque
+from collections import deque, defaultdict
 
 import agentspeak as asp
 from agentspeak import runtime as asp_runtime
+from agentspeak.runtime import plan_to_str
 from spade.behaviour import CyclicBehaviour
 from spade.message import Message
 
-from spade_bdi.utils import _ask_how, parse_literal
+from spade_bdi.utils import parse_literal
 
 PERCEPT_TAG = frozenset([asp.Literal("source", (asp.Literal("percept"),))])
 
@@ -133,6 +134,47 @@ class BDIBehaviour(CyclicBehaviour):
             for belief in beliefs:
                 print(self._remove_source(str(belief), source))
 
+    def _ask_how(self, term):
+        """
+        AskHow is a performative that allows the agent to ask for a plan to another agent.
+        We look in the plan.list of the slave agent the plan that master want,
+        if we find it: master agent use tellHow to tell the plan to slave agent
+        """
+        sender_name = None
+
+        # Receive the agent that ask for the plan
+        for annotation in list(term.annots):
+            if annotation.functor == "source":
+                sender_name = annotation.args[0].functor
+
+        if sender_name is None:
+            raise asp.AslError("expected source annotation")
+
+        plans_wanted = defaultdict(lambda: [])
+        plans = self.plans.values()
+
+        # Find the plans
+        for plan in plans:
+            for differents in plan:
+                if differents.head.functor in term.args[0]:
+                    plans_wanted[
+                        (
+                            differents.trigger,
+                            differents.goal_type,
+                            differents.head.functor,
+                            len(differents.head.args),
+                        )
+                    ].append(differents)
+
+        for plan in plans_wanted.values():
+            for different in plan:
+                strplan = plan_to_str(different)
+                message = asp.Literal("plain_text", (strplan,), frozenset())
+                message.with_annotation(
+                    asp.Literal("source", (asp.Literal(sender_name),))
+                )
+                self._call_ask_how(sender_name, message, asp.runtime.Intention())
+
     async def run(self):
         """
         Coroutine run cyclic.
@@ -197,7 +239,7 @@ class BDIBehaviour(CyclicBehaviour):
                     asp_runtime.Agent._call_ask_how = _call_ask_how
 
                     # Overrides function ask_how from module agentspeak
-                    asp_runtime.Agent._ask_how = _ask_how
+                    asp_runtime.Agent._ask_how = self._ask_how
 
                 else:
                     # Sends a literal
