@@ -82,3 +82,16 @@ skip-magic-trailing-comma = false
 
 [tool.ruff.lint.isort]
 known-first-party = ["spade_bdi"]
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.tox]
+env_list = ["py39", "py310", "py311", "py312", "flake8"]
+
+[tool.tox.env.lint]
+basepython = "python"
+deps = ["ruff"]
+commands = [
+    ["ruff", "check", "spade_bdi"]
+]
