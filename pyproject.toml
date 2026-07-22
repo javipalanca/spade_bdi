@@ -84,4 +84,4 @@ skip-magic-trailing-comma = false
 known-first-party = ["spade_bdi"]
 
 [tool.coverage.run]
-relative_files = "True"
+relative_files = true
