@@ -103,9 +103,12 @@ class BDIBehaviour(CyclicBehaviour):
 
     @staticmethod
     def _remove_source(belief, source):
-        if ")[source" in belief and not source:
-            belief = belief.split("[")[0].replace('"', "")
-        return belief
+        if "[source" in belief and not source:
+            if ")[source" in belief:
+                belief = belief.split(")[source")[0] + ")"
+            else:
+                belief = belief.split("[source")[0]
+        return belief.replace('"', "")
 
     def get_belief_value(self, key: str):
         """Get an agent's existing value or values of the <key> belief. The first belief matching
@@ -182,8 +185,7 @@ class BDIBehaviour(CyclicBehaviour):
         if self.agent.bdi_enabled:
             msg = await self.receive(timeout=0)
             if msg:
-                mdata = msg.metadata
-                ilf_type = mdata["ilf_type"]
+                ilf_type = msg.get_metadata("ilf_type")
                 if ilf_type == "tell":
                     goal_type = asp.GoalType.belief
                     trigger = asp.Trigger.addition
@@ -244,7 +246,6 @@ class BDIBehaviour(CyclicBehaviour):
                 else:
                     # Sends a literal
                     functor, args = parse_literal(msg.body)
-
                     message = asp.Literal(functor, args)
 
                 message = asp.freeze(message, intention.scope, {})

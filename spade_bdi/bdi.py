@@ -54,7 +54,7 @@ class BDIAgent(Agent):
         self.pause_bdi()
         try:
             with open(self.asl_file) as source:
-                self.bdi_agent = self.bdi_env.build_agent(source, self.bdi_actions)
+                self.bdi_agent = self.bdi_env.build_agent(source, self.bdi_actions, name=str(self.jid).split('@')[0])
             self.bdi_agent.name = self.jid
             self.resume_bdi()
         except FileNotFoundError:
