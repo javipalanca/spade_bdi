@@ -7,7 +7,7 @@ testdata = [
     ("predicate", "predicate", ""),
     ("foo(42)", "foo", (42,)),
     ("foo('bar')", "foo", ("bar",)),
-    ("foo(1, 2)", "foo", ((1, 2),)),
+    ("foo(1, 2)", "foo", (1, 2)),
 ]
 
 

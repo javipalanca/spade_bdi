@@ -110,7 +110,7 @@ def test_load_asl(bdi_agent):
 
     mock_file.assert_called_once_with(bdi_agent.asl_file)
     bdi_agent.bdi_env.build_agent.assert_called_once_with(
-        mock_file(), bdi_agent.bdi_actions
+        mock_file(), bdi_agent.bdi_actions, name="test"
     )
     assert bdi_agent.bdi_agent.name == "test@localhost"
     assert bdi_agent.bdi_enabled is True
