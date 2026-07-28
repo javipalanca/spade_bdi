@@ -1,3 +1,0 @@
-spade>=4.0.1
-agentspeak>=0.2.1
-loguru>=0.7.2

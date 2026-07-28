@@ -2,6 +2,13 @@
 History
 =======
 
+0.3.3 (2026-07-21)
+------------------
+* Updated to SPADE 4.1.4
+* Updated and optimized dependencies
+* Migration to UV
+* Added CI pipelines for GH Actions
+
 0.3.2 (2025-03-01)
 ------------------
 
