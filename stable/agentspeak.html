@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The AgentSpeak language &mdash; Spade-BDI 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Communication in AgentSpeak" href="communication.html" />
+    <link rel="prev" title="Creating a BDI Agent in SPADE" href="create_agent.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The AgentSpeak language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-semantics">Basic Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#syntax-of-agentspeak">Syntax of AgentSpeak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-agents-beliefs-desires-and-goals">Creating Agents: Beliefs, Desires, and Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-implications">Practical Implications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#variables-and-the-operator-in-agentspeak">Variables and the ‘?’ Operator in AgentSpeak</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#syntax-of-variables-in-agentspeak">Syntax of Variables in AgentSpeak</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-operator-to-retrieve-belief-values">Using the <code class="docutils literal notranslate"><span class="pre">'?'</span></code> Operator to Retrieve Belief Values</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-application-of-variables">Practical Application of Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">The AgentSpeak language</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/agentspeak.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-agentspeak-language">
+<h1>The AgentSpeak language<a class="headerlink" href="#the-agentspeak-language" title="Link to this heading"></a></h1>
+<p>The AgentSpeak language is a logic programming language based on the Belief-Desire-Intention (BDI) model.
+It is based on the <code class="docutils literal notranslate"><span class="pre">agentspeak</span></code> package, which is a Python implementation of the Jason language.
+The language is described in the following paper:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">Rao,</span> <span class="pre">A.</span> <span class="pre">S.,</span> <span class="pre">&amp;</span> <span class="pre">Georgeff,</span> <span class="pre">M.</span> <span class="pre">P.</span> <span class="pre">(1995).</span> <span class="pre">BDI</span> <span class="pre">agents:</span> <span class="pre">From</span> <span class="pre">theory</span> <span class="pre">to</span> <span class="pre">practice.</span> <span class="pre">ICMAS.</span></code>
+<code class="docutils literal notranslate"><span class="pre">https://cdn.aaai.org/ICMAS/1995/ICMAS95-042.pdf_</span></code></p>
+</div></blockquote>
+<p>This section provides an overview of its syntax and semantics, focusing on how beliefs, desires, and goals are
+represented and managed in AgentSpeak.</p>
+<section id="basic-semantics">
+<h2>Basic Semantics<a class="headerlink" href="#basic-semantics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Beliefs</strong>: In AgentSpeak, beliefs represent the agent’s knowledge about the world, itself, and other agents. They are often expressed in a simple predicate form. For example, <code class="docutils literal notranslate"><span class="pre">is_hot(temperature)</span></code> might represent the belief that the temperature is hot.</p></li>
+<li><p><strong>Desires and Goals</strong>: Desires or goals are states or conditions that the agent aims to bring about. In AgentSpeak, these are often represented as special kinds of beliefs or through goal operators. For instance, <code class="docutils literal notranslate"><span class="pre">!find_shade</span></code> could be a goal to find shade.</p></li>
+<li><p><strong>Plans and Actions</strong>: Plans are sequences of actions or steps that an agent will execute to achieve its goals. Actions can be internal (changing beliefs or goals) or external (interacting with the environment).</p></li>
+</ul>
+</section>
+<section id="syntax-of-agentspeak">
+<h2>Syntax of AgentSpeak<a class="headerlink" href="#syntax-of-agentspeak" title="Link to this heading"></a></h2>
+<p>AgentSpeak is a logic-based programming language used for creating intelligent agents in multi-agent systems. Understanding its syntax is crucial for effectively programming these agents. This section provides an overview of the key syntactic elements of AgentSpeak.</p>
+<p>Basic Elements</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Beliefs:</strong></dt><dd><ul>
+<li><p>Syntax: <code class="docutils literal notranslate"><span class="pre">belief(arguments)</span></code>.</p></li>
+<li><p>Description: Represent the agent’s knowledge or information about the world.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">is_sunny(true),</span> <span class="pre">temperature(25)</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Goals:</strong></dt><dd><ul>
+<li><p>Syntax: <code class="docutils literal notranslate"><span class="pre">!goal(arguments)</span></code>.</p></li>
+<li><p>Description: Goals are states or outcomes the agent wants to bring about or information it seeks.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">!find_shelter</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Plans:</strong></dt><dd><ul>
+<li><p>Syntax: <code class="docutils literal notranslate"><span class="pre">TriggeringEvent</span> <span class="pre">:</span> <span class="pre">Context</span> <span class="pre">&lt;-</span> <span class="pre">Body.</span></code></p></li>
+<li><p>Triggering Event: An event that initiates the plan, such as the addition (+) or deletion (-) of a belief or goal.</p></li>
+<li><p>Context: A logical condition that must hold for the plan to be applicable.</p></li>
+<li><p>Body: A sequence of actions or subgoals to be executed.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">+is_raining</span> <span class="pre">:</span> <span class="pre">is_outside</span> <span class="pre">&lt;-</span> <span class="pre">!find_umbrella;</span> <span class="pre">.print(&quot;Hello</span> <span class="pre">world&quot;).</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Actions</strong></dt><dd><ul>
+<li><p>Syntax: <code class="docutils literal notranslate"><span class="pre">.internal_action(arguments)</span></code>.</p></li>
+<li><p>Description: Defined by the developer or the environment.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">.print(&quot;Hello</span> <span class="pre">World&quot;)</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Communication</strong></dt><dd><ul>
+<li><dl class="simple">
+<dt>Sending Messages:</dt><dd><ul>
+<li><p>Syntax: <code class="docutils literal notranslate"><span class="pre">.send(receiver,</span> <span class="pre">illocution,</span> <span class="pre">content)</span></code>.</p></li>
+<li><p>Illocutions: Include tell, achieve, askHow, etc.</p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">.send(agentB,</span> <span class="pre">tell,</span> <span class="pre">is_sunny(true))</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Comments</strong></dt><dd><ul>
+<li><p>Single Line Comment: // This is a comment</p></li>
+<li><p>Multi-Line Comment: Not typically supported in standard AgentSpeak.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="creating-agents-beliefs-desires-and-goals">
+<h2>Creating Agents: Beliefs, Desires, and Goals<a class="headerlink" href="#creating-agents-beliefs-desires-and-goals" title="Link to this heading"></a></h2>
+<p>Agents are defined by their belief base, goal base, and plan library.</p>
+<ul>
+<li><p>Example of Beliefs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">is_sunny</span><span class="o">.</span>
+<span class="n">temperature</span><span class="p">(</span><span class="n">high</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>This represents beliefs that it is sunny and the temperature is high.</p>
+<ul>
+<li><p>Example of Goals:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!stay_cool.
+!drink_water.
+</pre></div>
+</div>
+</li>
+</ul>
+<p>These are goals to stay cool and to drink water.</p>
+<ul class="simple">
+<li><p>Plans and Actions</p></li>
+</ul>
+<p>A plan in AgentSpeak is a rule that specifies what to do in a given context.
+Example of a Plan:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!stay_cool : is_sunny &amp; temperature(high) &lt;-
+    !find_shade;
+    !drink_water.
+</pre></div>
+</div>
+<p>This plan states that to achieve the goal <code class="docutils literal notranslate"><span class="pre">stay_cool</span></code>, if it is sunny and the temperature is high
+(<code class="docutils literal notranslate"><span class="pre">is_sunny</span> <span class="pre">&amp;</span> <span class="pre">temperature(high)</span></code>), the agent should achive goals <code class="docutils literal notranslate"><span class="pre">!find_shade</span></code> and <code class="docutils literal notranslate"><span class="pre">!drink_water</span></code> sequentially.</p>
+<p>Optionally, a plan may have a custom a name that is set with a tag beginning with a &#64;. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@my_custom_plan
++!stay_cool : is_sunny &amp; temperature(high) &lt;-
+    !find_shade;
+    !drink_water.
+</pre></div>
+</div>
+</section>
+<section id="practical-implications">
+<h2>Practical Implications<a class="headerlink" href="#practical-implications" title="Link to this heading"></a></h2>
+<p>Understanding these basic concepts is crucial for effectively programming in AgentSpeak.
+<code class="docutils literal notranslate"><span class="pre">spade_bdi</span></code> provides additional constructs and features, enhancing the basic capabilities of AgentSpeak.
+When designing agents in SPADE, it is essential to carefully consider the initial set of beliefs and goals, as they drive the agent’s behavior through the plans.
+By grasping these fundamental concepts of AgentSpeak, developers can begin to design and implement sophisticated agents in SPADE, capable of complex decision-making and interactions in dynamic environments.
+The simplicity of AgentSpeak’s syntax, combined with its powerful representational capabilities, makes it a suitable choice for a wide range of applications in multi-agent systems.</p>
+<section id="variables-and-the-operator-in-agentspeak">
+<h3>Variables and the ‘?’ Operator in AgentSpeak<a class="headerlink" href="#variables-and-the-operator-in-agentspeak" title="Link to this heading"></a></h3>
+<p>In AgentSpeak, variables are essential for dynamic information processing within an agent’s logic.
+They are uniquely identified by starting with an uppercase letter, distinguishing them from constants and predicates. This section delves into the syntax and use of variables, focusing on the <code class="docutils literal notranslate"><span class="pre">?</span></code> operator for retrieving belief values.</p>
+</section>
+</section>
+<section id="syntax-of-variables-in-agentspeak">
+<h2>Syntax of Variables in AgentSpeak<a class="headerlink" href="#syntax-of-variables-in-agentspeak" title="Link to this heading"></a></h2>
+<p><strong>Uppercase Naming</strong>: Variables in AgentSpeak are always denoted by names starting with an uppercase letter. This convention distinguishes them from other elements like predicates or constants.
+Example of Variable Declaration: <code class="docutils literal notranslate"><span class="pre">Location,</span> <span class="pre">Temp,</span> <span class="pre">X,</span> <span class="pre">Y</span></code></p>
+<section id="using-the-operator-to-retrieve-belief-values">
+<h3>Using the <code class="docutils literal notranslate"><span class="pre">'?'</span></code> Operator to Retrieve Belief Values<a class="headerlink" href="#using-the-operator-to-retrieve-belief-values" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Purpose</strong>: The <code class="docutils literal notranslate"><span class="pre">?</span></code> operator in AgentSpeak is used to bind the current value of a belief to a variable. This operation is akin to querying the agent’s belief base.</p></li>
+<li><p><strong>Syntax</strong>: To use the <code class="docutils literal notranslate"><span class="pre">?</span></code> operator, include it before the belief name and specify the variable in the belief’s argument list. The format is typically <code class="docutils literal notranslate"><span class="pre">?Belief(Variable)</span></code>.</p></li>
+<li><p><strong>Example</strong>: If an agent has a belief <code class="docutils literal notranslate"><span class="pre">location(office)</span></code>, and you want to bind the value office to a variable <code class="docutils literal notranslate"><span class="pre">CurrentLocation</span></code>, you would use the statement <code class="docutils literal notranslate"><span class="pre">?location(CurrentLocation)</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="practical-application-of-variables">
+<h2>Practical Application of Variables<a class="headerlink" href="#practical-application-of-variables" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Retrieving and Using Belief Values:</p></li>
+</ul>
+</div></blockquote>
+<p>Variables are particularly useful for capturing and utilizing the values of beliefs in plans and decision-making. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!check_current_location
+: location(CurrentLocation) &amp; CurrentLocation == &quot;office&quot; &lt;-
+.print(&quot;The agent is currently in the office&quot;).
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">CurrentLocation</span></code> is a variable that retrieves the value from the location belief.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Dynamic Decision-Making in Contexts:</p></li>
+</ul>
+</div></blockquote>
+<p>Variables enable plans to adapt their behavior based on the changing state of the world, as represented by the agent’s beliefs. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+</span><span class="n">temperature</span><span class="p">(</span><span class="n">Temp</span><span class="p">)</span> <span class="p">:</span> <span class="n">Temp</span> <span class="o">&gt;</span> <span class="mi">30</span> <span class="o">&lt;-</span>
+    <span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;It&#39;s currently hot outside&quot;</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>In this example, Temp is a variable that holds the current value of the temperature belief, triggering the plan if Temp exceeds 30.</p>
+<section id="conclusion">
+<h3>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h3>
+<p>Proper use of variables and the <code class="docutils literal notranslate"><span class="pre">?</span></code> operator in AgentSpeak is fundamental for creating dynamic and responsive agents.
+Variables, identified by their uppercase starting letter, offer a way to handle changing information and make context-sensitive decisions.
+The <code class="docutils literal notranslate"><span class="pre">?</span></code> operator is a key tool for querying and utilizing the agent’s belief base, enhancing the agent’s ability to interact intelligently with its environment.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="create_agent.html" class="btn btn-neutral float-left" title="Creating a BDI Agent in SPADE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="communication.html" class="btn btn-neutral float-right" title="Communication in AgentSpeak" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

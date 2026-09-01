@@ -1,0 +1,184 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Managing Lists in AgentSpeak &mdash; Spade-BDI 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Create custom actions and functions" href="custom.html" />
+    <link rel="prev" title="Creating Plans in AgentSpeak" href="plans.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Managing Lists in AgentSpeak</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#list-structure-in-agentspeak">List Structure in AgentSpeak</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-operations-on-lists">Basic Operations on Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recursion-in-list-handling">Recursion in List Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Managing Lists in AgentSpeak</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lists.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="managing-lists-in-agentspeak">
+<h1>Managing Lists in AgentSpeak<a class="headerlink" href="#managing-lists-in-agentspeak" title="Link to this heading"></a></h1>
+<p>In AgentSpeak, lists are important data structures that enable agents to handle collections of items. While AgentSpeak does not offer the same list manipulation capabilities as imperative programming languages, it still provides ways to manage lists through pattern matching and recursion. This section explores how AgentSpeak handles lists.</p>
+<section id="list-structure-in-agentspeak">
+<h2>List Structure in AgentSpeak<a class="headerlink" href="#list-structure-in-agentspeak" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Representation</strong>: Lists in AgentSpeak are represented as a collection of elements enclosed in brackets and separated by commas, e.g., <code class="docutils literal notranslate"><span class="pre">[element1,</span> <span class="pre">element2,</span> <span class="pre">element3]</span></code>.</p></li>
+<li><p><strong>Head and Tail</strong>: Lists can be split into a “head” (the first element) and a “tail” (the remainder of the list). This is done using the pattern <code class="docutils literal notranslate"><span class="pre">[Head|Tail]</span></code>.</p></li>
+</ul>
+</section>
+<section id="basic-operations-on-lists">
+<h2>Basic Operations on Lists<a class="headerlink" href="#basic-operations-on-lists" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Accessing Elements</strong>:
+- The first element of the list (head) and the rest (tail) can be accessed using list decomposition.
+- <strong>Example</strong>:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!process_list([Head|Tail]) : true &lt;-
+    .print(&quot;Processing&quot;, Head);
+    !process_list(Tail).
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>Adding Elements</strong>:
+- AgentSpeak does not have a direct operation for adding elements, but this can be achieved by updating a list.
+- <strong>Example</strong>:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!add_element(Element) : list([List]) &lt;-
+    -+list([Element|List]).
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>Removing Elements</strong>:
+- Similar to adding elements, removing requires updating the list without the element to be removed.
+- <strong>Example</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!remove_element(Element) : list([Element|Tail]) &lt;-
+    -+list([Tail]).
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="recursion-in-list-handling">
+<h2>Recursion in List Handling<a class="headerlink" href="#recursion-in-list-handling" title="Link to this heading"></a></h2>
+<ul>
+<li><p><strong>Recursive Processing</strong>: To process lists, recursion is often used, where a plan calls itself with the list’s “tail” until the list is empty.</p></li>
+<li><p><strong>Example of Recursion</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!process_list([Head|Tail]) : .length(Tail, X) &amp; X &gt; 0  &lt;-
+    .do_something_with(Head);
+    !process_list(Tail).
+
++!process_list([LastElement]) : true  &lt;-
+    .do_something_with(LastElement).
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Managing lists in AgentSpeak, although not as straightforward as in other languages, is feasible and effective through list decomposition, creating new lists for adding or removing elements, and recursive patterns to process lists. These methods enable agents to dynamically handle sets of data and are essential for developing complex behaviors in multi-agent systems.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plans.html" class="btn btn-neutral float-left" title="Creating Plans in AgentSpeak" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom.html" class="btn btn-neutral float-right" title="Create custom actions and functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

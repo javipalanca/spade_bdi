@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spade_bdi package &mdash; Spade-BDI 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="spade_bdi" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">spade_bdi</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">spade_bdi package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-spade_bdi.bdi">spade_bdi.bdi module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spade_bdi.bdi.BDIAgent"><code class="docutils literal notranslate"><span class="pre">BDIAgent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-spade_bdi.bdi_behaviour">spade_bdi.bdi_behaviour module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spade_bdi.bdi_behaviour.BDIBehaviour"><code class="docutils literal notranslate"><span class="pre">BDIBehaviour</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#spade_bdi.bdi_behaviour.BeliefNotInitiated"><code class="docutils literal notranslate"><span class="pre">BeliefNotInitiated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-spade_bdi.utils">spade_bdi.utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#spade_bdi.utils.parse_literal"><code class="docutils literal notranslate"><span class="pre">parse_literal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-spade_bdi">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">spade_bdi</a></li>
+      <li class="breadcrumb-item active">spade_bdi package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/spade_bdi.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spade-bdi-package">
+<h1>spade_bdi package<a class="headerlink" href="#spade-bdi-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-spade_bdi.bdi">
+<span id="spade-bdi-bdi-module"></span><h2>spade_bdi.bdi module<a class="headerlink" href="#module-spade_bdi.bdi" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spade_bdi.bdi.</span></span><span class="sig-name descname"><span class="pre">BDIAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi.html#BDIAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi.BDIAgent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Agent</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.add_behaviour">
+<span class="sig-name descname"><span class="pre">add_behaviour</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">behaviour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi.html#BDIAgent.add_behaviour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.add_behaviour" title="Link to this definition"></a></dt>
+<dd><p>Adds and starts a behaviour to the agent.
+If template is not None it is used to match
+new messages and deliver them to the behaviour.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>behaviour (Type[spade.behaviour.CyclicBehaviour]): the behaviour to be started
+template (spade.template.Template, optional): the template to match messages with (Default value = None)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.add_custom_actions">
+<span class="sig-name descname"><span class="pre">add_custom_actions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi.html#BDIAgent.add_custom_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.add_custom_actions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.behaviours">
+<span class="sig-name descname"><span class="pre">behaviours</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.behaviours" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.client">
+<span class="sig-name descname"><span class="pre">client</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">XMPPClient</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.client" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.container">
+<span class="sig-name descname"><span class="pre">container</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.container" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.jid">
+<span class="sig-name descname"><span class="pre">jid</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.jid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.loop">
+<span class="sig-name descname"><span class="pre">loop</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.loop" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.password">
+<span class="sig-name descname"><span class="pre">password</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.password" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.pause_bdi">
+<span class="sig-name descname"><span class="pre">pause_bdi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi.html#BDIAgent.pause_bdi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.pause_bdi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.presence">
+<span class="sig-name descname"><span class="pre">presence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">PresenceManager</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.presence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.resume_bdi">
+<span class="sig-name descname"><span class="pre">resume_bdi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi.html#BDIAgent.resume_bdi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.resume_bdi" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.set_asl">
+<span class="sig-name descname"><span class="pre">set_asl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asl_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi.html#BDIAgent.set_asl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.set_asl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.traces">
+<span class="sig-name descname"><span class="pre">traces</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.traces" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.verify_security">
+<span class="sig-name descname"><span class="pre">verify_security</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.verify_security" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.web">
+<span class="sig-name descname"><span class="pre">web</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.web" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi.BDIAgent.xmpp_port">
+<span class="sig-name descname"><span class="pre">xmpp_port</span></span><a class="headerlink" href="#spade_bdi.bdi.BDIAgent.xmpp_port" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-spade_bdi.bdi_behaviour">
+<span id="spade-bdi-bdi-behaviour-module"></span><h2>spade_bdi.bdi_behaviour module<a class="headerlink" href="#module-spade_bdi.bdi_behaviour" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spade_bdi.bdi_behaviour.</span></span><span class="sig-name descname"><span class="pre">BDIBehaviour</span></span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CyclicBehaviour</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.add_actions">
+<span class="sig-name descname"><span class="pre">add_actions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.add_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.add_actions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.agent">
+<span class="sig-name descname"><span class="pre">agent</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.agent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.get_belief">
+<span class="sig-name descname"><span class="pre">get_belief</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.get_belief"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.get_belief" title="Link to this definition"></a></dt>
+<dd><p>Get an agent’s existing belief. The first belief matching
+&lt;key&gt; is returned. Keep &lt;source&gt; False to strip source.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.get_belief_value">
+<span class="sig-name descname"><span class="pre">get_belief_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.get_belief_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.get_belief_value" title="Link to this definition"></a></dt>
+<dd><p>Get an agent’s existing value or values of the &lt;key&gt; belief. The first belief matching
+&lt;key&gt; is returned</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.get_beliefs">
+<span class="sig-name descname"><span class="pre">get_beliefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.get_beliefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.get_beliefs" title="Link to this definition"></a></dt>
+<dd><p>Get agent’s beliefs.Keep &lt;source&gt; False to strip source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.is_running">
+<span class="sig-name descname"><span class="pre">is_running</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.is_running" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.on_end">
+<span class="sig-name descname"><span class="pre">on_end</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.on_end" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.on_start">
+<span class="sig-name descname"><span class="pre">on_start</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.on_start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.presence">
+<span class="sig-name descname"><span class="pre">presence</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.presence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.print_beliefs">
+<span class="sig-name descname"><span class="pre">print_beliefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.print_beliefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.print_beliefs" title="Link to this definition"></a></dt>
+<dd><p>Print agent’s beliefs.Keep &lt;source&gt; False to strip source.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.queue">
+<span class="sig-name descname"><span class="pre">queue</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.queue" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.remove_belief">
+<span class="sig-name descname"><span class="pre">remove_belief</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.remove_belief"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.remove_belief" title="Link to this definition"></a></dt>
+<dd><p>Remove an existing agent’s belief.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.run">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.run" title="Link to this definition"></a></dt>
+<dd><p>Coroutine run cyclic.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.set_belief">
+<span class="sig-name descname"><span class="pre">set_belief</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BDIBehaviour.set_belief"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.set_belief" title="Link to this definition"></a></dt>
+<dd><p>Set an agent’s belief. If it already exists, updates it.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.template">
+<span class="sig-name descname"><span class="pre">template</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.template" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BDIBehaviour.web">
+<span class="sig-name descname"><span class="pre">web</span></span><a class="headerlink" href="#spade_bdi.bdi_behaviour.BDIBehaviour.web" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="spade_bdi.bdi_behaviour.BeliefNotInitiated">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">spade_bdi.bdi_behaviour.</span></span><span class="sig-name descname"><span class="pre">BeliefNotInitiated</span></span><a class="reference internal" href="_modules/spade_bdi/bdi_behaviour.html#BeliefNotInitiated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.bdi_behaviour.BeliefNotInitiated" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+</section>
+<section id="module-spade_bdi.utils">
+<span id="spade-bdi-utils-module"></span><h2>spade_bdi.utils module<a class="headerlink" href="#module-spade_bdi.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="spade_bdi.utils.parse_literal">
+<span class="sig-prename descclassname"><span class="pre">spade_bdi.utils.</span></span><span class="sig-name descname"><span class="pre">parse_literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spade_bdi/utils.html#parse_literal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#spade_bdi.utils.parse_literal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-spade_bdi">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-spade_bdi" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="spade_bdi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

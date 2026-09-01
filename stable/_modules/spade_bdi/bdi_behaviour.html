@@ -1,0 +1,415 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spade_bdi.bdi_behaviour &mdash; Spade-BDI 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">spade_bdi.bdi_behaviour</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for spade_bdi.bdi_behaviour</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">agentspeak</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">asp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentspeak</span><span class="w"> </span><span class="kn">import</span> <span class="n">runtime</span> <span class="k">as</span> <span class="n">asp_runtime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentspeak.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_to_str</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade.behaviour</span><span class="w"> </span><span class="kn">import</span> <span class="n">CyclicBehaviour</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade_bdi.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_literal</span>
+
+<span class="n">PERCEPT_TAG</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;percept&quot;</span><span class="p">),))])</span>
+
+
+<div class="viewcode-block" id="BeliefNotInitiated">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BeliefNotInitiated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BeliefNotInitiated</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="BDIBehaviour">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BDIBehaviour</span><span class="p">(</span><span class="n">CyclicBehaviour</span><span class="p">):</span>
+<div class="viewcode-block" id="BDIBehaviour.add_actions">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.add_actions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_actions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;.send&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_send</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">intention</span><span class="p">):</span>
+            <span class="n">receivers</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">grounded</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intention</span><span class="o">.</span><span class="n">scope</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">receivers</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">receivers</span><span class="p">,</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">):</span>
+                <span class="n">receivers</span> <span class="o">=</span> <span class="p">(</span><span class="n">receivers</span><span class="p">,)</span>
+            <span class="n">ilf</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">grounded</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">intention</span><span class="o">.</span><span class="n">scope</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">asp</span><span class="o">.</span><span class="n">is_atom</span><span class="p">(</span><span class="n">ilf</span><span class="p">):</span>
+                <span class="k">return</span>
+            <span class="n">ilf_type</span> <span class="o">=</span> <span class="n">ilf</span><span class="o">.</span><span class="n">functor</span>
+            <span class="n">mdata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;performative&quot;</span><span class="p">:</span> <span class="s2">&quot;BDI&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ilf_type&quot;</span><span class="p">:</span> <span class="n">ilf_type</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">receiver</span> <span class="ow">in</span> <span class="n">receivers</span><span class="p">:</span>
+                <span class="n">body</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">asl_str</span><span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">intention</span><span class="o">.</span><span class="n">scope</span><span class="p">,</span> <span class="p">{}))</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">receiver</span><span class="p">),</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">mdata</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+            <span class="k">yield</span></div>
+
+
+<div class="viewcode-block" id="BDIBehaviour.set_belief">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.set_belief">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_belief</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set an agent&#39;s belief. If it already exists, updates it.&quot;&quot;&quot;</span>
+        <span class="n">new_args</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">new_args</span> <span class="o">+=</span> <span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="n">x</span><span class="p">),)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_args</span> <span class="o">+=</span> <span class="p">(</span><span class="n">x</span><span class="p">,)</span>
+        <span class="n">term</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_args</span><span class="p">),</span> <span class="n">PERCEPT_TAG</span><span class="p">)</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">belief</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="p">[</span><span class="n">term</span><span class="o">.</span><span class="n">literal_group</span><span class="p">()]):</span>
+            <span class="k">if</span> <span class="n">asp</span><span class="o">.</span><span class="n">unifies</span><span class="p">(</span><span class="n">term</span><span class="p">,</span> <span class="n">belief</span><span class="p">):</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">removal</span><span class="p">,</span>
+                        <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">belief</span><span class="p">,</span>
+                        <span class="n">belief</span><span class="p">,</span>
+                        <span class="n">asp</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Intention</span><span class="p">(),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">addition</span><span class="p">,</span>
+                    <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">belief</span><span class="p">,</span>
+                    <span class="n">term</span><span class="p">,</span>
+                    <span class="n">asp</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Intention</span><span class="p">(),</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BDIBehaviour.remove_belief">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.remove_belief">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_belief</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove an existing agent&#39;s belief.&quot;&quot;&quot;</span>
+        <span class="n">new_args</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">new_args</span> <span class="o">+=</span> <span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="n">x</span><span class="p">),)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_args</span> <span class="o">+=</span> <span class="p">(</span><span class="n">x</span><span class="p">,)</span>
+        <span class="n">term</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">new_args</span><span class="p">),</span> <span class="n">PERCEPT_TAG</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">removal</span><span class="p">,</span>
+                <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">belief</span><span class="p">,</span>
+                <span class="n">term</span><span class="p">,</span>
+                <span class="n">asp</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Intention</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BDIBehaviour.get_belief">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.get_belief">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_belief</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an agent&#39;s existing belief. The first belief matching</span>
+<span class="sd">        &lt;key&gt; is returned. Keep &lt;source&gt; False to strip source.&quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">beliefs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">beliefs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="p">[</span><span class="n">beliefs</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">BeliefNotInitiated</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">raw_belief</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="p">[</span><span class="n">beliefs</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">raw_belief</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_source</span><span class="p">(</span><span class="n">raw_belief</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+                <span class="n">belief</span> <span class="o">=</span> <span class="n">raw_belief</span>
+                <span class="k">return</span> <span class="n">belief</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_source</span><span class="p">(</span><span class="n">belief</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;[source&quot;</span> <span class="ow">in</span> <span class="n">belief</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">source</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;)[source&quot;</span> <span class="ow">in</span> <span class="n">belief</span><span class="p">:</span>
+                <span class="n">belief</span> <span class="o">=</span> <span class="n">belief</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)[source&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">belief</span> <span class="o">=</span> <span class="n">belief</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;[source&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">belief</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BDIBehaviour.get_belief_value">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.get_belief_value">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_belief_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an agent&#39;s existing value or values of the &lt;key&gt; belief. The first belief matching</span>
+<span class="sd">        &lt;key&gt; is returned&quot;&quot;&quot;</span>
+        <span class="n">belief</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_belief</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">belief</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">belief</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BDIBehaviour.get_beliefs">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.get_beliefs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_beliefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get agent&#39;s beliefs.Keep &lt;source&gt; False to strip source.&quot;&quot;&quot;</span>
+        <span class="n">belief_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">beliefs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">raw_belief</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="p">[</span><span class="n">beliefs</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">raw_belief</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_source</span><span class="p">(</span><span class="n">raw_belief</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
+                <span class="n">belief_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_belief</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">belief_list</span></div>
+
+
+<div class="viewcode-block" id="BDIBehaviour.print_beliefs">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.print_beliefs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_beliefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print agent&#39;s beliefs.Keep &lt;source&gt; False to strip source.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">beliefs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">beliefs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">belief</span> <span class="ow">in</span> <span class="n">beliefs</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_remove_source</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">belief</span><span class="p">),</span> <span class="n">source</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ask_how</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        AskHow is a performative that allows the agent to ask for a plan to another agent.</span>
+<span class="sd">        We look in the plan.list of the slave agent the plan that master want,</span>
+<span class="sd">        if we find it: master agent use tellHow to tell the plan to slave agent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sender_name</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Receive the agent that ask for the plan</span>
+        <span class="k">for</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">term</span><span class="o">.</span><span class="n">annots</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">annotation</span><span class="o">.</span><span class="n">functor</span> <span class="o">==</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span>
+                <span class="n">sender_name</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">functor</span>
+
+        <span class="k">if</span> <span class="n">sender_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">asp</span><span class="o">.</span><span class="n">AslError</span><span class="p">(</span><span class="s2">&quot;expected source annotation&quot;</span><span class="p">)</span>
+
+        <span class="n">plans_wanted</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+        <span class="n">plans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plans</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+        <span class="c1"># Find the plans</span>
+        <span class="k">for</span> <span class="n">plan</span> <span class="ow">in</span> <span class="n">plans</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">differents</span> <span class="ow">in</span> <span class="n">plan</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">differents</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">functor</span> <span class="ow">in</span> <span class="n">term</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">plans_wanted</span><span class="p">[</span>
+                        <span class="p">(</span>
+                            <span class="n">differents</span><span class="o">.</span><span class="n">trigger</span><span class="p">,</span>
+                            <span class="n">differents</span><span class="o">.</span><span class="n">goal_type</span><span class="p">,</span>
+                            <span class="n">differents</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">functor</span><span class="p">,</span>
+                            <span class="nb">len</span><span class="p">(</span><span class="n">differents</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">args</span><span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">differents</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">plan</span> <span class="ow">in</span> <span class="n">plans_wanted</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">different</span> <span class="ow">in</span> <span class="n">plan</span><span class="p">:</span>
+                <span class="n">strplan</span> <span class="o">=</span> <span class="n">plan_to_str</span><span class="p">(</span><span class="n">different</span><span class="p">)</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">strplan</span><span class="p">,),</span> <span class="nb">frozenset</span><span class="p">())</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">with_annotation</span><span class="p">(</span>
+                    <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="n">sender_name</span><span class="p">),))</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_call_ask_how</span><span class="p">(</span><span class="n">sender_name</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">asp</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Intention</span><span class="p">())</span>
+
+<div class="viewcode-block" id="BDIBehaviour.run">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi_behaviour.BDIBehaviour.run">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Coroutine run cyclic.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_enabled</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">receive</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg</span><span class="p">:</span>
+                <span class="n">ilf_type</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="s2">&quot;ilf_type&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;tell&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">belief</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">addition</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;untell&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">belief</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">removal</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;achieve&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">achievement</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">addition</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;unachieve&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">achievement</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">removal</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;tellHow&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">tellHow</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">addition</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;untellHow&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">tellHow</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">removal</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;askHow&quot;</span><span class="p">:</span>
+                    <span class="n">goal_type</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">GoalType</span><span class="o">.</span><span class="n">askHow</span>
+                    <span class="n">trigger</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">addition</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">asp</span><span class="o">.</span><span class="n">AslError</span><span class="p">(</span>
+                        <span class="s2">&quot;unknown illocutionary force: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ilf_type</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="n">intention</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">Intention</span><span class="p">()</span>
+
+                <span class="c1"># Prepare message. The message is either a plain text or a structured message.</span>
+                <span class="k">if</span> <span class="n">ilf_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;tellHow&quot;</span><span class="p">,</span> <span class="s2">&quot;untellHow&quot;</span><span class="p">]:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">body</span><span class="p">,),</span> <span class="nb">frozenset</span><span class="p">())</span>
+                <span class="k">elif</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;askHow&quot;</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">body</span><span class="p">,),</span> <span class="nb">frozenset</span><span class="p">())</span>
+
+                    <span class="k">def</span><span class="w"> </span><span class="nf">_call_ask_how</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">intention</span><span class="p">):</span>
+                        <span class="c1"># message.args[0] is the string plan to be sent</span>
+                        <span class="n">body</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">asl_str</span><span class="p">(</span>
+                            <span class="n">asp</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intention</span><span class="o">.</span><span class="n">scope</span><span class="p">,</span> <span class="p">{})</span>
+                        <span class="p">)</span>
+                        <span class="n">mdata</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s2">&quot;performative&quot;</span><span class="p">:</span> <span class="s2">&quot;BDI&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;ilf_type&quot;</span><span class="p">:</span> <span class="s2">&quot;tellHow&quot;</span><span class="p">,</span>
+                        <span class="p">}</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">to</span><span class="o">=</span><span class="n">receiver</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">mdata</span><span class="p">)</span>
+                        <span class="n">_call_ask_how</span><span class="o">.</span><span class="n">spade_agent</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                            <span class="n">_call_ask_how</span><span class="o">.</span><span class="n">spade_class</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+                    <span class="n">_call_ask_how</span><span class="o">.</span><span class="n">spade_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span>
+
+                    <span class="n">_call_ask_how</span><span class="o">.</span><span class="n">spade_class</span> <span class="o">=</span> <span class="bp">self</span>
+
+                    <span class="n">asp_runtime</span><span class="o">.</span><span class="n">Agent</span><span class="o">.</span><span class="n">_call_ask_how</span> <span class="o">=</span> <span class="n">_call_ask_how</span>
+
+                    <span class="c1"># Overrides function ask_how from module agentspeak</span>
+                    <span class="n">asp_runtime</span><span class="o">.</span><span class="n">Agent</span><span class="o">.</span><span class="n">_ask_how</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ask_how</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Sends a literal</span>
+                    <span class="n">functor</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parse_literal</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="n">functor</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+                <span class="n">message</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">intention</span><span class="o">.</span><span class="n">scope</span><span class="p">,</span> <span class="p">{})</span>
+
+                <span class="c1"># Add source to message</span>
+                <span class="n">tagged_message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">with_annotation</span><span class="p">(</span>
+                    <span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">sender</span><span class="p">)),))</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">ilf_type</span> <span class="o">==</span> <span class="s2">&quot;tellHow&quot;</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="n">goal_type</span><span class="p">,</span> <span class="n">tagged_message</span><span class="p">,</span> <span class="n">intention</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="p">:</span>
+                <span class="n">temp_intentions</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">trigger</span><span class="p">,</span> <span class="n">goal_type</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">intention</span> <span class="ow">in</span> <span class="n">temp_intentions</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">trigger</span><span class="p">,</span> <span class="n">goal_type</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">intention</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_intention_buffer</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">agent</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
