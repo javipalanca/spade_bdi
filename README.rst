@@ -23,6 +23,10 @@ Spade-BDI
 .. image:: https://img.shields.io/pypi/format/spade_bdi.svg
     :target: https://pypi.python.org/pypi/spade_bdi
 
+.. image:: https://coveralls.io/repos/github/javipalanca/spade_bdi/badge.svg
+    :target: https://coveralls.io/github/javipalanca/spade_bdi
+
+
 
 Create hybrid agents with a BDI layer for the SPADE MAS Platform.
 
