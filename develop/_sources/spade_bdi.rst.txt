@@ -1,0 +1,37 @@
+spade\_bdi package
+==================
+
+Submodules
+----------
+
+spade\_bdi.bdi module
+---------------------
+
+.. automodule:: spade_bdi.bdi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+spade\_bdi.bdi\_behaviour module
+--------------------------------
+
+.. automodule:: spade_bdi.bdi_behaviour
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+spade\_bdi.utils module
+-----------------------
+
+.. automodule:: spade_bdi.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: spade_bdi
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spade-BDI &mdash; Spade-BDI 0.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to Spade-BDI’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Spade-BDI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#credits">Credits</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Spade-BDI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="spade-bdi">
+<h1>Spade-BDI<a class="headerlink" href="#spade-bdi" title="Link to this heading"></a></h1>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/spade"><img alt="https://img.shields.io/pypi/v/spade_bdi.svg" src="https://img.shields.io/pypi/v/spade_bdi.svg" />
+</a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/spade_bdi"><img alt="https://img.shields.io/pypi/pyversions/spade_bdi.svg" src="https://img.shields.io/pypi/pyversions/spade_bdi.svg" />
+</a>
+<a class="reference external image-reference" href="https://opensource.org/licenses/MIT"><img alt="MIT License" src="https://img.shields.io/pypi/l/spade_bdi" />
+</a>
+<a class="reference external image-reference" href="https://pepy.tech/project/spade_bdi"><img alt="Downloads" src="https://pepy.tech/badge/spade_bdi" />
+</a>
+<a class="reference external image-reference" href="https://spade-bdi.readthedocs.io?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/spade_bdi/badge/?version=latest" />
+</a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/spade_bdi"><img alt="https://img.shields.io/pypi/format/spade_bdi.svg" src="https://img.shields.io/pypi/format/spade_bdi.svg" />
+</a>
+<p>Create hybrid agents with a BDI layer for the SPADE MAS Platform.</p>
+<ul class="simple">
+<li><p>Free software: MIT License</p></li>
+<li><p>Documentation: <a class="reference external" href="https://spade-bdi.readthedocs.io">https://spade-bdi.readthedocs.io</a>.</p></li>
+</ul>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Create agents that parse and execute an ASL file written in AgentSpeak.</p></li>
+<li><p>Supports Agentspeak-like BDI behaviours.</p></li>
+<li><p>Add custom actions and functions.</p></li>
+<li><p>Send TELL, UNTELL and ACHIEVE  KQML performatives.</p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>basic.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade_bdi.bdi</span><span class="w"> </span><span class="kn">import</span> <span class="n">BDIAgent</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter the XMPP server address: &quot;</span><span class="p">)</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Please enter the password: &quot;</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">BDIAgent</span><span class="p">(</span><span class="s2">&quot;BasicAgent@&quot;</span> <span class="o">+</span> <span class="n">server</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="s2">&quot;basic.asl&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">set_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">print_beliefs</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">get_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">))</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">print_beliefs</span><span class="p">()</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">remove_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">print_beliefs</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">get_beliefs</span><span class="p">())</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">set_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>basic.asl:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!start.
+
++!start &lt;-
+    +car(red);
+    .a_function(3,W);
+    .print(&quot;w =&quot;, W);
+    literal_function(red,Y);
+    .print(&quot;Y =&quot;, Y);
+    .custom_action(8);
+    +truck(blue).
+
++car(Color)
+ &lt;- .print(&quot;The car is &quot;,Color).
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h2>Examples<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>basic.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade_bdi.bdi</span><span class="w"> </span><span class="kn">import</span> <span class="n">BDIAgent</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter the XMPP server address: &quot;</span><span class="p">)</span>
+<span class="n">password</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Please enter the password: &quot;</span><span class="p">)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">BDIAgent</span><span class="p">(</span><span class="s2">&quot;BasicAgent@&quot;</span> <span class="o">+</span> <span class="n">server</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="s2">&quot;basic.asl&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">set_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">print_beliefs</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">get_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">))</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">print_beliefs</span><span class="p">()</span>
+
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">remove_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">print_beliefs</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">get_beliefs</span><span class="p">())</span>
+<span class="n">a</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">set_belief</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>basic.asl:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!start.
+
++!start &lt;-
+    +car(red);
+    .a_function(3,W);
+    .print(&quot;w =&quot;, W);
+    literal_function(red,Y);
+    .print(&quot;Y =&quot;, Y);
+    .custom_action(8);
+    +truck(blue).
+
++car(Color)
+ &lt;- .print(&quot;The car is &quot;,Color).
+</pre></div>
+</div>
+</section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Link to this heading"></a></h2>
+<p>This package was created with <a class="reference external" href="https://github.com/audreyr/cookiecutter">Cookiecutter</a> and the <a class="reference external" href="https://github.com/audreyr/cookiecutter-pypackage">audreyr/cookiecutter-pypackage</a> project template.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Spade-BDI’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

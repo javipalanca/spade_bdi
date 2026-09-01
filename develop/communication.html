@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Communication in AgentSpeak &mdash; Spade-BDI 0.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Creating Plans in AgentSpeak" href="plans.html" />
+    <link rel="prev" title="The AgentSpeak language" href="agentspeak.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Communication in AgentSpeak</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sending-messages">Sending Messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#syntax-for-sending-messages">Syntax for Sending Messages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Communication in AgentSpeak</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/communication.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="communication-in-agentspeak">
+<h1>Communication in AgentSpeak<a class="headerlink" href="#communication-in-agentspeak" title="Link to this heading"></a></h1>
+<section id="sending-messages">
+<h2>Sending Messages<a class="headerlink" href="#sending-messages" title="Link to this heading"></a></h2>
+<p>In AgentSpeak and multi-agent systems, communication is a key aspect of agent interaction.
+This section covers the process and considerations for sending messages between agents in AgentSpeak, with a focus on the syntax, types of messages, and practical implementation.</p>
+<section id="syntax-for-sending-messages">
+<h3>Syntax for Sending Messages<a class="headerlink" href="#syntax-for-sending-messages" title="Link to this heading"></a></h3>
+<p>AgentSpeak provides a simple and flexible syntax for sending messages. The general form includes specifying the type of communicative act (ilocution), the recipient agent, and the content of the message.</p>
+<p>Basic Syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">recipient</span><span class="p">,</span> <span class="n">ilocution</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where recipient is the identifier of the target agent, ilocution is the type of communicative act, and content is the message content.</p>
+<p>Types of Communicative acts:
+In AgentSpeak, communication between agents is achieved through illocutionary acts, often referred to as communicative acts.
+Unlike performatives, which are more general in speech act theory, AgentSpeak uses specific types of illocutions to facilitate clear and purpose-driven agent interactions.
+Here are the key illocutions used in AgentSpeak:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">tell</span></code>: Used to inform another agent about a belief. This act is about sharing knowledge or facts. For example, an agent might tell another agent that a specific condition is true:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">tell</span><span class="p">,</span> <span class="n">weather</span><span class="p">(</span><span class="n">raining</span><span class="p">));</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">achieve</span></code>: Sent to request another agent to perform some action or bring about a certain state of affairs. This is similar to a request or command in conventional communication:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">achieve</span><span class="p">,</span> <span class="n">fix_the_leak</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tellHow</span></code>: This illocution is used when an agent wants to inform another agent about how to perform a specific action or achieve a goal. It’s about sharing procedural knowledge:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">tellHow</span><span class="p">,</span> <span class="s2">&quot;+!solve_problem &lt;- !gather_data; !analyze_data.&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">askHow</span></code>: When an agent needs to know how to perform an action or achieve a goal, it uses askHow to request this procedural knowledge from another agent.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">askHow</span><span class="p">,</span> <span class="n">learn_chess</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">untell</span></code>: This is used to inform another agent that a previously held belief is no longer true. It’s a way of updating or correcting earlier information:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">untell</span><span class="p">,</span> <span class="n">weather</span><span class="p">(</span><span class="n">raining</span><span class="p">));</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unachieve</span></code>: Sent to request that another agent cease its efforts to achieve a previously requested goal. It’s like a cancellation or retraction of a previous achieve request:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">unachieve</span><span class="p">,</span> <span class="n">fix_the_leak</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">untellHow</span></code>: Used to inform another agent to disregard previously told procedural knowledge. This might be used if the procedure is no longer valid or has been updated:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">agentB</span><span class="p">,</span> <span class="n">untellHow</span><span class="p">,</span> <span class="s2">&quot;@plan_name&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Each of these illocutions plays a vital role in the communication protocol within a multi-agent system, allowing agents to share knowledge, coordinate actions, and update each other on changes in beliefs or plans. When designing AgentSpeak agents, it is crucial to implement these illocutions correctly to ensure effective and coherent agent interactions.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="agentspeak.html" class="btn btn-neutral float-left" title="The AgentSpeak language" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plans.html" class="btn btn-neutral float-right" title="Creating Plans in AgentSpeak" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

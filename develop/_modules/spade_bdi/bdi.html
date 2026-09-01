@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spade_bdi.bdi &mdash; Spade-BDI 0.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plans.html">Creating Plans in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">spade_bdi.bdi</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for spade_bdi.bdi</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">agentspeak</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">asp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">agentspeak</span><span class="w"> </span><span class="kn">import</span> <span class="n">runtime</span> <span class="k">as</span> <span class="n">asp_runtime</span><span class="p">,</span> <span class="n">stdlib</span> <span class="k">as</span> <span class="n">asp_stdlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade.template</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">spade_bdi.bdi_behaviour</span><span class="w"> </span><span class="kn">import</span> <span class="n">BDIBehaviour</span>
+
+<span class="n">PERCEPT_TAG</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">asp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="s2">&quot;percept&quot;</span><span class="p">),))])</span>
+
+
+<div class="viewcode-block" id="BDIAgent">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi.BDIAgent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BDIAgent</span><span class="p">(</span><span class="n">Agent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">jid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">asl</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">actions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asl_file</span> <span class="o">=</span> <span class="n">asl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_intention_buffer</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi</span><span class="p">:</span> <span class="n">BDIBehaviour</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_agent</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">jid</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">template</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;performative&quot;</span><span class="p">:</span> <span class="s2">&quot;BDI&quot;</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_behaviour</span><span class="p">(</span><span class="n">BDIBehaviour</span><span class="p">(),</span> <span class="n">template</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_env</span> <span class="o">=</span> <span class="n">asp_runtime</span><span class="o">.</span><span class="n">Environment</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_actions</span> <span class="o">=</span> <span class="n">asp</span><span class="o">.</span><span class="n">Actions</span><span class="p">(</span><span class="n">asp_stdlib</span><span class="o">.</span><span class="n">actions</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">actions</span> <span class="k">else</span> <span class="n">actions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi</span><span class="o">.</span><span class="n">add_actions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_custom_actions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bdi_actions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_asl</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BDIAgent.add_custom_actions">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi.BDIAgent.add_custom_actions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_custom_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BDIAgent.pause_bdi">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi.BDIAgent.pause_bdi">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause_bdi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_enabled</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="BDIAgent.resume_bdi">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi.BDIAgent.resume_bdi">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume_bdi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bdi_enabled</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BDIAgent.add_behaviour">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi.BDIAgent.add_behaviour">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_behaviour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">behaviour</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">behaviour</span><span class="p">,</span> <span class="n">BDIBehaviour</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bdi</span> <span class="o">=</span> <span class="n">behaviour</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_behaviour</span><span class="p">(</span><span class="n">behaviour</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BDIAgent.set_asl">
+<a class="viewcode-back" href="../../spade_bdi.html#spade_bdi.bdi.BDIAgent.set_asl">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_asl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asl_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asl_file</span> <span class="o">=</span> <span class="n">asl_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_asl</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_asl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pause_bdi</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">asl_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">source</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bdi_agent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdi_env</span><span class="o">.</span><span class="n">build_agent</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bdi_actions</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jid</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bdi_agent</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resume_bdi</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Warning: ASL specified for </span><span class="si">{}</span><span class="s2"> does not exist. Disabling BDI.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">jid</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asl_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pause_bdi</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

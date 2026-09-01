@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creating Plans in AgentSpeak &mdash; Spade-BDI 0.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Managing Lists in AgentSpeak" href="lists.html" />
+    <link rel="prev" title="Communication in AgentSpeak" href="communication.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spade-BDI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Spade-BDI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create_agent.html">Creating a BDI Agent in SPADE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentspeak.html">The AgentSpeak language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Communication in AgentSpeak</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Creating Plans in AgentSpeak</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#plan-syntax">Plan Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-a-basic-plan">Writing a Basic Plan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices-in-plan-creation">Best Practices in Plan Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#handling-failures-in-plans">Handling Failures in Plans</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lists.html">Managing Lists in AgentSpeak</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Create custom actions and functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">spade_bdi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spade-BDI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Creating Plans in AgentSpeak</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plans.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="creating-plans-in-agentspeak">
+<h1>Creating Plans in AgentSpeak<a class="headerlink" href="#creating-plans-in-agentspeak" title="Link to this heading"></a></h1>
+<p>In AgentSpeak, plans are central to the behavior of agents. They define how an agent should react to certain events or changes in their environment or internal state.
+This section explores the syntax and structure of plans in AgentSpeak, providing examples and best practices.</p>
+<section id="plan-syntax">
+<h2>Plan Syntax<a class="headerlink" href="#plan-syntax" title="Link to this heading"></a></h2>
+<p><strong>Basic Structure</strong>: A plan in AgentSpeak typically consists of a triggering event, an optional context, and a sequence of actions. The general format is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TriggeringEvent</span> <span class="p">:</span> <span class="n">Context</span> <span class="o">&lt;-</span> <span class="n">Actions</span><span class="o">.</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Triggering Event: This is what initiates the plan. It can be the addition or removal of a belief (+belief or -belief), or the adoption or dropping of a goal (+!goal or -!goal).</p></li>
+<li><p>Context: The context is a condition that must be true for the plan to be applicable. It’s written as a logical expression.</p></li>
+<li><p>Actions: These are the steps the agent will take, interacting with the environment or other agents.</p></li>
+<li><p>Tag (Optional): Before the triggering event, a plan may have a tag beginning with a &#64; and followed by the name of the plan.</p></li>
+</ul>
+</section>
+<section id="writing-a-basic-plan">
+<h2>Writing a Basic Plan<a class="headerlink" href="#writing-a-basic-plan" title="Link to this heading"></a></h2>
+<p>Example: Suppose an agent needs to respond to a high temperature reading.
+The plan might look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@refresh_plan
++temperature(high) : is_outside &lt;-
+    !move_to_shade;
+    !drink_water.
+</pre></div>
+</div>
+<p>In this plan, <code class="docutils literal notranslate"><span class="pre">+temperature(high)</span></code> is the triggering event (a belief that the temperature is high).
+The context <code class="docutils literal notranslate"><span class="pre">is_outside</span></code> checks if the agent is outside. The actions <code class="docutils literal notranslate"><span class="pre">move_to_shade</span></code> and <code class="docutils literal notranslate"><span class="pre">drink_water</span></code> are executed in sequence.</p>
+</section>
+<section id="best-practices-in-plan-creation">
+<h2>Best Practices in Plan Creation<a class="headerlink" href="#best-practices-in-plan-creation" title="Link to this heading"></a></h2>
+<p>When designing plans in AgentSpeak, it is important to consider the following best practices:</p>
+<ul class="simple">
+<li><p>Modularity: Keep plans modular. Each plan should have a single, clear purpose.</p></li>
+<li><p>Reusability: Design plans that can be reused in different situations.</p></li>
+<li><p>Readability: Write clear and understandable plans, as AgentSpeak is a declarative language.</p></li>
+</ul>
+</section>
+<section id="handling-failures-in-plans">
+<h2>Handling Failures in Plans<a class="headerlink" href="#handling-failures-in-plans" title="Link to this heading"></a></h2>
+<p>Plans should account for potential failures.
+This can be done through alternative plans or by including failure-handling steps within the plan.
+Example with Failure Handling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+!travel(destination) : car_is_functional &lt;-
+    drive(car, destination).
++!travel(destination) : not car_is_functional &lt;-
+    call_taxi(destination).
+</pre></div>
+</div>
+<p>Here, there are two plans for the same goal <code class="docutils literal notranslate"><span class="pre">!travel(destination)</span></code>.
+The first plan is used if the car is functional, and the second plan (calling a taxi) is a backup if the car isn’t functional.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="communication.html" class="btn btn-neutral float-left" title="Communication in AgentSpeak" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lists.html" class="btn btn-neutral float-right" title="Managing Lists in AgentSpeak" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, Sergio Frayle Pérez.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
